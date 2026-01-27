@@ -1,10 +1,12 @@
 <template>
   <section class="about">
     <div class="container">
+      <!-- Profile Section -->
       <div class="profile">
         <img src="/profile.png" alt="Profile" />
       </div>
 
+      <!-- Content Section -->
       <div class="content">
         <h1>About Me</h1>
         <p>
@@ -12,13 +14,16 @@
           responsive web interfaces using Vue.js.
         </p>
 
-        <h2>Skills</h2>
-        <div class="skills">
-          <div class="skill" v-for="s in skills" :key="s.name">
-            <span>{{ s.name }}</span>
-            <div class="bar">
-              <div class="progress" :style="{ width: s.level }"></div>
-            </div>
+        <h2>Skills & Technologies</h2>
+        <div class="skills-cards">
+          <div
+            class="skill-card"
+            v-for="s in skills"
+            :key="s.name"
+          >
+            <img :src="s.logo" :alt="s.name" class="tech-logo" />
+            <h3>{{ s.name }}</h3>
+            <p>{{ s.level }}</p>
           </div>
         </div>
       </div>
@@ -28,11 +33,63 @@
 
 <script setup>
 const skills = [
-  { name: "Vue.js", level: "90%" },
-  { name: "HTML & CSS", level: "95%" },
-  { name: "JavaScript", level: "85%" },
-  { name: "Tailwind / CSS Frameworks", level: "80%" },
+  {
+    name: "HTML5",
+    level: "95%",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/html5.svg",
+  },
+  {
+    name: "CSS3",
+    level: "90%",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/css3.svg",
+  },
+  {
+    name: "JavaScript",
+    level: "85%",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/javascript.svg",
+  },
+  {
+    name: "Vue.js",
+    level: "90%",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/vue-dot-js.svg",
+  },
+  {
+    name: "Tailwind CSS",
+    level: "80%",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/tailwindcss.svg",
+  },
+  {
+    name: "Git",
+    level: "75%",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/git.svg",
+  },
+  {
+    name: "React",
+    level: "85%",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/react.svg",
+  },
+  {
+    name: "Svelte",
+    level: "70%",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/svelte.svg",
+  },
+  {
+    name: "Bootstrap",
+    level: "80%",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/bootstrap.svg",
+  },
+  {
+    name: "D3.js",
+    level: "65%",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/d3-dot-js.svg",
+  },
+  {
+    name: "Grunt",
+    level: "60%",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/grunt.svg",
+  },
 ]
+
 </script>
 
 <style scoped>
@@ -46,7 +103,7 @@ const skills = [
 .container {
   display: flex;
   flex-wrap: wrap;
-  max-width: 900px;
+  max-width: 1000px;
   margin: auto;
   gap: 40px;
 }
@@ -54,7 +111,7 @@ const skills = [
 .profile img {
   width: 250px;
   border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s;
 }
 
@@ -77,42 +134,58 @@ const skills = [
 }
 
 .content h2 {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-.skills .skill {
-  margin-bottom: 15px;
+/* Skills as cards */
+.skills-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-.skills span {
-  display: block;
-  margin-bottom: 5px;
+.skill-card {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 20px;
+  flex: 1 1 150px;
+  max-width: 180px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.bar {
-  width: 100%;
-  height: 10px;
-  background: #ddd;
-  border-radius: 5px;
-  overflow: hidden;
+.skill-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
 }
 
-.progress {
-  height: 100%;
-  background: black;
-  border-radius: 5px;
-  transition: width 1s ease-in-out;
+.skill-card h3 {
+  margin: 10px 0 5px;
+  font-size: 1.1rem;
 }
 
-.dark .bar {
-  background: #444;
+.skill-card p {
+  color: #555;
 }
 
-.dark .progress {
-  background: #eee;
-  height: 100%;
+/* Tech logos */
+.tech-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
 }
-  
+
+/* Dark mode support */
+.dark .skill-card {
+  background: #333;
+  color: #fff;
+}
+
+.dark .skill-card p {
+  color: #ccc;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
@@ -121,6 +194,10 @@ const skills = [
 
   .profile img {
     width: 200px;
+  }
+
+  .skills-cards {
+    justify-content: center;
   }
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
   <nav>
     <h2>Portfolio</h2>
-
-    <div>
+    <button class="burger" @click="toggleMenu">☰</button>
+    <div :class="{ open: openMenu }">
       <router-link to="/">Home</router-link>
       <router-link to="/about">About</router-link>
       <router-link to="/projects">Projects</router-link>
@@ -11,21 +11,40 @@
   </nav>
 </template>
 
+<script setup>
+import { ref } from "vue"
+const openMenu = ref(false)
+function toggleMenu() { openMenu.value = !openMenu.value }
+</script>
+
 <style scoped>
 nav {
   display: flex;
   justify-content: space-between;
-  padding: 20px 40px;
-  box-shadow: 0 2px 10px rgba(0,0,0,.1);
+  padding: 20px;
+  position: relative;
 }
-
-a {
-  margin-left: 20px;
-  text-decoration: none;
-  color: black;
+.burger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 2rem;
 }
-
-a.router-link-active {
-  font-weight: bold;
+div {
+  display: flex;
+  gap: 20px;
+}
+div.open {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  background: var(--bg);
+  padding: 10px;
+}
+@media (max-width: 768px){
+  .burger { display: block }
+  div { display: none }
 }
 </style>

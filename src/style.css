@@ -82,4 +82,9 @@ button:focus-visible {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+
+.hero {
+  background: url('/hero.jpg') center / cover fixed;
+}
+
 }

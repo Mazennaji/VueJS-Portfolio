@@ -57,7 +57,7 @@ const skills = [
 .content p { line-height: 1.6; margin-bottom: 25px; }
 .content h2 { margin-bottom: 20px; }
 
-/* Skills cards */
+
 .skills-cards {
   display: flex;
   flex-wrap: wrap;
@@ -85,7 +85,6 @@ const skills = [
 
 .tech-logo { width: 40px; height: 40px; object-fit: contain; }
 
-/* Responsive */
 @media (max-width: 768px) {
   .container { flex-direction: column; align-items: center; }
   .profile img { width: 200px; }

@@ -8,9 +8,13 @@
     </button>
 
     <!-- Burger Menu -->
-    <button class="burger" @click="toggleMenu">☰</button>
+    <button class="burger" @click="toggleMenu">
+      <span :class="{ open: openMenu }"></span>
+      <span :class="{ open: openMenu }"></span>
+      <span :class="{ open: openMenu }"></span>
+    </button>
 
-    <!-- Links -->
+    <!-- Menu Links -->
     <div class="menu" :class="{ open: openMenu }">
       <router-link to="/">Home</router-link>
       <router-link to="/about">About</router-link>
@@ -41,6 +45,7 @@ nav {
   color: var(--text);
   position: relative;
   transition: all 0.3s;
+  z-index: 100;
 }
 
 h2 { margin: 0; }
@@ -54,15 +59,42 @@ h2 { margin: 0; }
   color: var(--text);
 }
 
+/* Burger Button */
 .burger {
   display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 28px;
+  height: 22px;
   background: none;
   border: none;
-  font-size: 2rem;
   cursor: pointer;
-  color: var(--text);
+  padding: 0;
+  z-index: 110;
 }
 
+.burger span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all 0.4s ease;
+}
+
+.burger span.open:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.burger span.open:nth-child(2) {
+  opacity: 0;
+}
+
+.burger span.open:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Menu links */
 .menu {
   display: flex;
   gap: 20px;
@@ -76,21 +108,29 @@ h2 { margin: 0; }
   top: 60px;
   right: 20px;
   background: var(--bg);
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
+/* Links */
 a {
   text-decoration: none;
   color: var(--text);
   font-weight: 500;
+  transition: color 0.3s;
 }
 
 a:hover { color: #1e90ff; }
 
+/* Responsive */
 @media (max-width: 768px) {
-  .burger { display: block; }
+  .burger { display: flex; }
   .menu { display: none; }
+}
+
+/* Dark mode burger color */
+.dark .burger span {
+  background: #f5f5f5;
 }
 </style>

@@ -83,8 +83,5 @@ button:focus-visible {
 }
 
 
-.hero {
-  background: url('/hero.jpg') center / cover fixed;
-}
 
 }

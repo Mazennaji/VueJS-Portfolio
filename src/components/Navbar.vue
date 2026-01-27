@@ -7,10 +7,10 @@
       {{ isDark ? '☀️ Light' : '🌙 Dark' }}
     </button>
 
-    <!-- Burger Menu for Mobile -->
+    <!-- Burger Menu -->
     <button class="burger" @click="toggleMenu">☰</button>
 
-    <!-- Menu Links -->
+    <!-- Links -->
     <div class="menu" :class="{ open: openMenu }">
       <router-link to="/">Home</router-link>
       <router-link to="/about">About</router-link>
@@ -37,17 +37,14 @@ nav {
   justify-content: space-between;
   align-items: center;
   padding: 15px 30px;
-  position: relative;
   background: var(--bg);
   color: var(--text);
+  position: relative;
   transition: all 0.3s;
 }
 
-h2 {
-  margin: 0;
-}
+h2 { margin: 0; }
 
-/* Dark mode toggle */
 .dark-toggle {
   margin-right: 15px;
   border: none;
@@ -57,7 +54,6 @@ h2 {
   color: var(--text);
 }
 
-/* Burger button */
 .burger {
   display: none;
   background: none;
@@ -67,7 +63,6 @@ h2 {
   color: var(--text);
 }
 
-/* Menu links */
 .menu {
   display: flex;
   gap: 20px;
@@ -86,20 +81,16 @@ h2 {
   box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
-/* Links style */
 a {
   text-decoration: none;
   color: var(--text);
   font-weight: 500;
 }
 
-a:hover {
-  color: #1e90ff;
-}
+a:hover { color: #1e90ff; }
 
-/* Responsive */
 @media (max-width: 768px) {
-  .burger { display: block }
-  .menu { display: none }
+  .burger { display: block; }
+  .menu { display: none; }
 }
 </style>

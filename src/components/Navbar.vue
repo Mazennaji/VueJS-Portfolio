@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <h2>Portfolio</h2>
+    <h2>John Doe</h2>
     <button class="burger" @click="toggleMenu">☰</button>
     <div :class="{ open: openMenu }">
       <router-link to="/">Home</router-link>

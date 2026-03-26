@@ -1,5 +1,5 @@
 <template>
-  <div class="app-root" :class="{ dark: isDark }">
+  <div class="app-root">
     <Navbar :isDark="isDark" @toggle-dark="toggleDark" />
     <main class="app-main">
       <router-view v-slot="{ Component }">
@@ -12,12 +12,14 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue"
+import { ref, watch, onMounted } from "vue"
 import Navbar from "./components/Navbar.vue"
 
-const isDark = ref(
-  window.matchMedia("(prefers-color-scheme: dark)").matches
-)
+const isDark = ref(false)
+
+onMounted(() => {
+  isDark.value = window.matchMedia("(prefers-color-scheme: dark)").matches
+})
 
 function toggleDark() {
   isDark.value = !isDark.value
@@ -60,6 +62,34 @@ watch(isDark, (val) => {
   --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+:root.dark {
+  --bg-base:    #0b0b0e;
+  --bg-surface: #111115;
+  --bg-raised:  #16161b;
+
+  --border-subtle: #1e1e24;
+  --border-mid:    #2a2a32;
+
+  --text-primary:   #f0ebe2;
+  --text-secondary: #9a8c78;
+  --text-muted:     #6e6a64;
+  --text-faint:     #4a4640;
+}
+
+:root:not(.dark) {
+  --bg-base:    #f5f2ed;
+  --bg-surface: #edeae4;
+  --bg-raised:  #e5e1da;
+
+  --border-subtle: #d8d3ca;
+  --border-mid:    #ccc7bc;
+
+  --text-primary:   #1a1814;
+  --text-secondary: #5a5248;
+  --text-muted:     #7a7268;
+  --text-faint:     #a09890;
+}
+
 html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
@@ -76,6 +106,7 @@ body {
   background: var(--bg-base);
   color: var(--text-primary);
   line-height: 1.6;
+  transition: background 0.4s ease, color 0.4s ease;
 }
 
 #app {
@@ -88,9 +119,6 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg-base);
-  color: var(--text-primary);
-  transition: background 0.4s ease, color 0.4s ease;
 }
 
 .app-main {
@@ -103,52 +131,17 @@ body {
   color: var(--bg-base);
 }
 
-::-webkit-scrollbar {
-  width: 4px;
-}
+::-webkit-scrollbar        { width: 4px; }
+::-webkit-scrollbar-track  { background: var(--bg-base); }
+::-webkit-scrollbar-thumb  { background: var(--border-mid); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
-::-webkit-scrollbar-track {
-  background: var(--bg-base);
-}
+a      { color: inherit; text-decoration: none; }
+img    { display: block; max-width: 100%; }
+button { font-family: var(--font-sans); }
 
-::-webkit-scrollbar-thumb {
-  background: var(--border-mid);
-  border-radius: 2px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--gold);
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-img {
-  display: block;
-  max-width: 100%;
-}
-
-button {
-  font-family: var(--font-sans);
-}
-
-.page-enter-active {
-  transition: opacity 0.35s ease, transform 0.4s var(--ease-out-expo);
-}
-
-.page-leave-active {
-  transition: opacity 0.2s ease, transform 0.25s ease;
-}
-
-.page-enter-from {
-  opacity: 0;
-  transform: translateY(16px);
-}
-
-.page-leave-to {
-  opacity: 0;
-  transform: translateY(-8px);
-}
+.page-enter-active { transition: opacity 0.35s ease, transform 0.4s var(--ease-out-expo); }
+.page-leave-active { transition: opacity 0.2s ease, transform 0.25s ease; }
+.page-enter-from   { opacity: 0; transform: translateY(16px); }
+.page-leave-to     { opacity: 0; transform: translateY(-8px); }
 </style>

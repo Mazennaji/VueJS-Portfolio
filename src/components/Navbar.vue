@@ -1,136 +1,310 @@
 <template>
-  <nav>
-    <h2>John Doe</h2>
+  <nav :class="{ scrolled, 'menu-open': openMenu }">
+    <div class="nav-inner">
 
-    <!-- Dark Mode Toggle -->
-    <button class="dark-toggle" @click="$emit('toggle-dark')">
-      {{ isDark ? '☀️ Light' : '🌙 Dark' }}
-    </button>
+      <router-link to="/" class="wordmark">John Doe</router-link>
 
-    <!-- Burger Menu -->
-    <button class="burger" @click="toggleMenu">
-      <span :class="{ open: openMenu }"></span>
-      <span :class="{ open: openMenu }"></span>
-      <span :class="{ open: openMenu }"></span>
-    </button>
+      <div class="nav-links">
+        <router-link
+          v-for="link in links"
+          :key="link.to"
+          :to="link.to"
+          class="nav-link"
+        >
+          {{ link.label }}
+          <span class="link-dot" />
+        </router-link>
+      </div>
 
-    <!-- Menu Links -->
-    <div class="menu" :class="{ open: openMenu }">
-      <router-link to="/">Home</router-link>
-      <router-link to="/about">About</router-link>
-      <router-link to="/projects">Projects</router-link>
-      <router-link to="/contact">Contact</router-link>
+      <div class="nav-actions">
+        <button class="theme-btn" @click="$emit('toggle-dark')" :aria-label="isDark ? 'Switch to light' : 'Switch to dark'">
+          <svg v-if="!isDark" viewBox="0 0 24 24" fill="none" class="theme-icon">
+            <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.5"/>
+            <g stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <line x1="12" y1="2.5" x2="12" y2="4.5"/>
+              <line x1="12" y1="19.5" x2="12" y2="21.5"/>
+              <line x1="2.5"  y1="12" x2="4.5"  y2="12"/>
+              <line x1="19.5" y1="12" x2="21.5" y2="12"/>
+              <line x1="5.6"  y1="5.6"  x2="7"   y2="7"/>
+              <line x1="17"   y1="17"   x2="18.4" y2="18.4"/>
+              <line x1="18.4" y1="5.6"  x2="17"  y2="7"/>
+              <line x1="7"    y1="17"   x2="5.6"  y2="18.4"/>
+            </g>
+          </svg>
+          <svg v-else viewBox="0 0 24 24" fill="none" class="theme-icon">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <button class="burger" @click="toggleMenu" :aria-label="openMenu ? 'Close menu' : 'Open menu'">
+          <span class="bar bar-1" />
+          <span class="bar bar-2" />
+        </button>
+      </div>
+
     </div>
+
+    <Transition name="mobile-menu">
+      <div v-if="openMenu" class="mobile-menu">
+        <router-link
+          v-for="(link, i) in links"
+          :key="link.to"
+          :to="link.to"
+          class="mobile-link"
+          :style="`--i: ${i}`"
+          @click="openMenu = false"
+        >
+          <span class="mobile-num">0{{ i + 1 }}</span>
+          {{ link.label }}
+          <span class="mobile-arrow">→</span>
+        </router-link>
+      </div>
+    </Transition>
   </nav>
 </template>
 
 <script setup>
-import { ref, defineProps } from "vue"
+import { ref, onMounted, onUnmounted } from "vue"
+
+defineProps({ isDark: Boolean })
+defineEmits(["toggle-dark"])
+
+const links = [
+  { to: "/",        label: "Home"     },
+  { to: "/about",   label: "About"    },
+  { to: "/projects",label: "Projects" },
+  { to: "/contact", label: "Contact"  },
+]
 
 const openMenu = ref(false)
+const scrolled  = ref(false)
+
 function toggleMenu() { openMenu.value = !openMenu.value }
 
-defineProps({
-  isDark: Boolean
-})
+function onScroll() { scrolled.value = window.scrollY > 40 }
+
+onMounted(()  => window.addEventListener("scroll", onScroll))
+onUnmounted(() => window.removeEventListener("scroll", onScroll))
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&family=DM+Sans:wght@300;400;500&display=swap");
+
 nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  font-family: "DM Sans", sans-serif;
+  transition: background 0.4s ease, border-color 0.4s ease;
+  border-bottom: 1px solid transparent;
+}
+
+nav.scrolled {
+  background: rgba(11, 11, 14, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom-color: #1e1e24;
+}
+
+.nav-inner {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 15px 30px;
-  background: var(--bg);
-  color: var(--text);
+  justify-content: space-between;
+  padding: 0 48px;
+  height: 68px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.wordmark {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #f0ebe2;
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  flex-shrink: 0;
+  transition: color 0.3s ease;
+}
+
+.wordmark:hover { color: #c9a96e; }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.nav-link {
   position: relative;
-  transition: all 0.3s;
-  z-index: 100;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #6e6a64;
+  text-decoration: none;
+  padding-bottom: 2px;
+  transition: color 0.3s ease;
 }
 
-h2 { margin: 0; }
+.nav-link:hover,
+.nav-link.router-link-active {
+  color: #f0ebe2;
+}
 
-.dark-toggle {
-  margin-right: 15px;
-  border: none;
+.link-dot {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #c9a96e;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.nav-link:hover .link-dot,
+.nav-link.router-link-active .link-dot {
+  transform: translateX(-50%) scale(1);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.theme-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
+  border: 1px solid #1e1e24;
+  color: #6e6a64;
   cursor: pointer;
-  font-size: 1rem;
-  color: var(--text);
+  transition: color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Burger Button */
+.theme-btn:hover {
+  color: #c9a96e;
+  border-color: #c9a96e;
+}
+
+.theme-icon {
+  width: 15px;
+  height: 15px;
+}
+
 .burger {
   display: none;
   flex-direction: column;
-  justify-content: space-between;
-  width: 28px;
-  height: 22px;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
   background: none;
-  border: none;
+  border: 1px solid #1e1e24;
   cursor: pointer;
-  padding: 0;
-  z-index: 110;
+  padding: 0 9px;
+  transition: border-color 0.3s ease;
 }
 
-.burger span {
+.burger:hover { border-color: #c9a96e; }
+
+.bar {
   display: block;
-  height: 3px;
-  width: 100%;
-  background: var(--text);
-  border-radius: 2px;
-  transition: all 0.4s ease;
+  height: 1px;
+  background: #9a8c78;
+  transition: width 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
 }
 
-.burger span.open:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
+.bar-1 { width: 18px; }
+.bar-2 { width: 12px; }
+
+.menu-open .bar-1 {
+  width: 18px;
+  transform: translateY(3px) rotate(45deg);
 }
 
-.burger span.open:nth-child(2) {
-  opacity: 0;
+.menu-open .bar-2 {
+  width: 18px;
+  transform: translateY(-3px) rotate(-45deg);
 }
 
-.burger span.open:nth-child(3) {
-  transform: rotate(-45deg) translate(5px, -5px);
-}
-
-/* Menu links */
-.menu {
-  display: flex;
-  gap: 20px;
-  transition: all 0.3s;
-}
-
-.menu.open {
+.mobile-menu {
   display: flex;
   flex-direction: column;
-  position: absolute;
-  top: 60px;
-  right: 20px;
-  background: var(--bg);
-  padding: 15px 20px;
-  border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  background: #0b0b0e;
+  border-top: 1px solid #1e1e24;
+  padding: 8px 0 24px;
 }
 
-/* Links */
-a {
+.mobile-link {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 32px;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6e6a64;
   text-decoration: none;
-  color: var(--text);
-  font-weight: 500;
-  transition: color 0.3s;
+  border-bottom: 1px solid #111115;
+  transition: color 0.3s ease, padding-left 0.3s ease;
+  animation: slide-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 50ms) both;
 }
 
-a:hover { color: #1e90ff; }
+.mobile-link:hover,
+.mobile-link.router-link-active {
+  color: #f0ebe2;
+  padding-left: 40px;
+}
 
-/* Responsive */
+.mobile-num {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 15px;
+  color: #2a2a30;
+  font-weight: 700;
+  min-width: 24px;
+  transition: color 0.3s ease;
+}
+
+.mobile-link:hover .mobile-num { color: #c9a96e; }
+
+.mobile-arrow {
+  margin-left: auto;
+  font-size: 14px;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.mobile-link:hover .mobile-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.mobile-menu-enter-active { transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+.mobile-menu-leave-active { transition: opacity 0.2s ease, transform 0.25s ease; }
+.mobile-menu-enter-from  { opacity: 0; transform: translateY(-8px); }
+.mobile-menu-leave-to    { opacity: 0; transform: translateY(-4px); }
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
 @media (max-width: 768px) {
-  .burger { display: flex; }
-  .menu { display: none; }
-}
-
-/* Dark mode burger color */
-.dark .burger span {
-  background: #f5f5f5;
+  .nav-links { display: none; }
+  .burger    { display: flex; }
+  .nav-inner { padding: 0 24px; }
 }
 </style>

@@ -1,5 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
+import GitHubFeed from "../components/GitHubFeed.vue"
+import PageTransition from "../components/PageTransition.vue";
 
 const isDark = ref(document.documentElement.classList.contains("dark"));
 const visitors = ref(null);
@@ -231,6 +233,9 @@ const skills = [
             <span class="learning-tag">2025</span>
           </div>
         </div>
+
+        <GitHubFeed username="your-github-username" />
+        <PageTransition />
 
         <div class="visitor-counter">
           <div class="counter-icon">

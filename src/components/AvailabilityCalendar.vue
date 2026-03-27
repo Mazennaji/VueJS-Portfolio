@@ -77,16 +77,12 @@ const monthLabel = computed(() =>
   current.value.toLocaleDateString("en-US", { month: "long", year: "numeric" })
 )
 
-// Edit this to reflect your real schedule
-// Keys are "YYYY-MM-DD", values: "available" | "busy" | "booked"
 const schedule = {
-  // Booked out days
   [`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-10`]: "booked",
   [`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-11`]: "booked",
   [`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-12`]: "booked",
   [`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-17`]: "booked",
   [`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-18`]: "booked",
-  // Busy but possible
   [`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-22`]: "busy",
   [`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-23`]: "busy",
   [`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-24`]: "busy",
@@ -103,7 +99,6 @@ const cells = computed(() => {
   const first = new Date(y, m, 1)
   const last  = new Date(y, m + 1, 0)
 
-  // Monday-based offset
   let startOffset = first.getDay() - 1
   if (startOffset < 0) startOffset = 6
 

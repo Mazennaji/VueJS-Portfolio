@@ -4,7 +4,7 @@ import { ref, onMounted, onUnmounted } from "vue"
 const isDark = ref(document.documentElement.classList.contains("dark"))
 let mo
 
-const titles  = ["Frontend Developer", "Vue Engineer", "UI Developer", "Design-to-Code Dev"]
+const titles = [ "Frontend Engineer", "UI Systems Engineer", "Design Systems Architect", "Frontend Software Engineer"]
 const current = ref(titles[0])
 let  idx      = 0
 let  charIdx  = 0

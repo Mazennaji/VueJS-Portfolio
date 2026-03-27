@@ -1,60 +1,211 @@
 <script setup>
-import { onMounted, ref } from "vue"
+import { onMounted, ref } from "vue";
 
-const isDark = ref(document.documentElement.classList.contains("dark"))
+const isDark = ref(document.documentElement.classList.contains("dark"));
 
 const observer = new MutationObserver(() => {
-  isDark.value = document.documentElement.classList.contains("dark")
-})
+  isDark.value = document.documentElement.classList.contains("dark");
+});
 
 onMounted(() => {
   observer.observe(document.documentElement, {
     attributes: true,
     attributeFilter: ["class"],
-  })
+  });
 
-  const cards = document.querySelectorAll(".skill-card")
-  const bars  = document.querySelectorAll(".skill-bar-fill")
+  const cards = document.querySelectorAll(".skill-card");
+  const bars = document.querySelectorAll(".skill-bar-fill");
 
-  const cardObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("show") })
-  }, { threshold: 0.15 })
+  const cardObs = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) e.target.classList.add("show");
+      });
+    },
+    { threshold: 0.15 },
+  );
 
-  const barObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("grow") })
-  }, { threshold: 0.3 })
+  const barObs = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) e.target.classList.add("grow");
+      });
+    },
+    { threshold: 0.3 },
+  );
 
-  cards.forEach(c => cardObs.observe(c))
-  bars.forEach(b => barObs.observe(b))
-})
+  cards.forEach((c) => cardObs.observe(c));
+  bars.forEach((b) => barObs.observe(b));
+});
 
 const skills = [
-  { name: "HTML5",      level: "95%", colorDark: "#E34F26", colorLight: "#E34F26", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/html5.svg" },
-  { name: "CSS3",       level: "90%", colorDark: "#1572B6", colorLight: "#1572B6", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/css3.svg" },
-  { name: "JavaScript", level: "85%", colorDark: "#F7DF1E", colorLight: "#c9a800", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/javascript.svg" },
-  { name: "TypeScript", level: "80%", colorDark: "#3178C6", colorLight: "#3178C6", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/typescript.svg" },
-  { name: "Vue.js",     level: "90%", colorDark: "#4FC08D", colorLight: "#368a62", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/vuedotjs.svg" },
-  { name: "React",      level: "85%", colorDark: "#61DAFB", colorLight: "#0a9bb5", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/react.svg" },
-  { name: "Vite",      level: "80%", colorDark: "#646CFF", colorLight: "#646CFF", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/vite.svg" },
-  { name: "Svelte",     level: "70%", colorDark: "#FF3E00", colorLight: "#FF3E00", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/svelte.svg" },
-  { name: "Tailwind",   level: "80%", colorDark: "#06B6D4", colorLight: "#0284a0", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/tailwindcss.svg" },
-  { name: "Bootstrap",  level: "80%", colorDark: "#7952B3", colorLight: "#7952B3", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/bootstrap.svg" },
-  { name: "Supabase",  level: "75%", colorDark: "#3FCF8E", colorLight: "#3FCF8E", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/supabase.svg" },
-  { name: "Firebase",  level: "73%", colorDark: "#FFCA28", colorLight: "#FFCA28", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/firebase.svg" },
-  { name: "Vercel",  level: "80%", colorDark: "#FFFFFF", colorLight: "#000000", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/vercel.svg" },
-  { name: "Git",        level: "75%", colorDark: "#F05032", colorLight: "#F05032", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/git.svg" },
-  { name: "GitHub",     level: "80%", colorDark: "#F1F1F1", colorLight: "#1a1a1a", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/github.svg" },
-  { name: "Angular",    level: "70%", colorDark: "#DD0031", colorLight: "#DD0031", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/angular.svg" },
-  { name: "Grunt",      level: "60%", colorDark: "#FAA918", colorLight: "#c47d00", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/grunt.svg" },
-  { name: "Next.js",      level: "80%", colorDark: "#f8f8f8", colorLight: "#1a1a1a", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/nextdotjs.svg" },
-  { name: "Nuxt.js",      level: "80%", colorDark: "#f8f8f8", colorLight: "#1a1a1a", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/nuxtdotjs.svg" },
-]
+  {
+    name: "HTML5",
+    level: "95%",
+    colorDark: "#E34F26",
+    colorLight: "#E34F26",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/html5.svg",
+  },
+  {
+    name: "CSS3",
+    level: "90%",
+    colorDark: "#1572B6",
+    colorLight: "#1572B6",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/css3.svg",
+  },
+  {
+    name: "JavaScript",
+    level: "85%",
+    colorDark: "#F7DF1E",
+    colorLight: "#c9a800",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/javascript.svg",
+  },
+  {
+    name: "TypeScript",
+    level: "80%",
+    colorDark: "#3178C6",
+    colorLight: "#3178C6",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/typescript.svg",
+  },
+  {
+    name: "Vue.js",
+    level: "90%",
+    colorDark: "#4FC08D",
+    colorLight: "#368a62",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/vuedotjs.svg",
+  },
+  {
+    name: "React",
+    level: "85%",
+    colorDark: "#61DAFB",
+    colorLight: "#0a9bb5",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/react.svg",
+  },
+  {
+    name: "Vite",
+    level: "80%",
+    colorDark: "#646CFF",
+    colorLight: "#646CFF",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/vite.svg",
+  },
+  {
+    name: "Svelte",
+    level: "70%",
+    colorDark: "#FF3E00",
+    colorLight: "#FF3E00",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/svelte.svg",
+  },
+  {
+    name: "Tailwind",
+    level: "80%",
+    colorDark: "#06B6D4",
+    colorLight: "#0284a0",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/tailwindcss.svg",
+  },
+  {
+    name: "Bootstrap",
+    level: "80%",
+    colorDark: "#7952B3",
+    colorLight: "#7952B3",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/bootstrap.svg",
+  },
+  {
+    name: "Supabase",
+    level: "75%",
+    colorDark: "#3FCF8E",
+    colorLight: "#3FCF8E",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/supabase.svg",
+  },
+  {
+    name: "Firebase",
+    level: "73%",
+    colorDark: "#FFCA28",
+    colorLight: "#FFCA28",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/firebase.svg",
+  },
+  {
+    name: "Vercel",
+    level: "80%",
+    colorDark: "#FFFFFF",
+    colorLight: "#000000",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/vercel.svg",
+  },
+  {
+    name: "Git",
+    level: "75%",
+    colorDark: "#F05032",
+    colorLight: "#F05032",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/git.svg",
+  },
+  {
+    name: "GitHub",
+    level: "80%",
+    colorDark: "#F1F1F1",
+    colorLight: "#1a1a1a",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/github.svg",
+  },
+  {
+    name: "Angular",
+    level: "70%",
+    colorDark: "#DD0031",
+    colorLight: "#DD0031",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/angular.svg",
+  },
+  {
+    name: "NPM",
+    level: "78%",
+    colorDark: "#CB3837",
+    colorLight: "#CB3837",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/npm.svg",
+  },
+  {
+    name: "Next.js",
+    level: "80%",
+    colorDark: "#f8f8f8",
+    colorLight: "#1a1a1a",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/nextdotjs.svg",
+  },
+  {
+    name: "Nuxt.js",
+    level: "80%",
+    colorDark: "#f8f8f8",
+    colorLight: "#1a1a1a",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/nuxtdotjs.svg",
+  },
+  {
+    name: "D3.js",
+    level: "60%",
+    colorDark: "#f9a03c",
+    colorLight: "#f9a03c",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/d3js/d3js-original.svg",
+  },
+  {
+    name: "Grunt",
+    level: "70%",
+    colorDark: "#c9a96e",
+    colorLight: "#c9a96e",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/grunt.svg",
+  },
+  {
+    name: "Sass",
+    level: "80%",
+    colorDark: "#CC6699",
+    colorLight: "#CC6699",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/sass.svg",
+  },
+  {
+    name: "Figma",
+    level: "70%",
+    colorDark: "#F24E1E",
+    colorLight: "#F24E1E",
+    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/figma.svg",
+  },
+];
 </script>
 
 <template>
   <section class="about">
     <div class="container">
-
       <aside class="sidebar">
         <div class="profile-wrap">
           <img src="/profile.png" alt="Profile" class="profile-img" />
@@ -76,9 +227,11 @@ const skills = [
         </header>
 
         <p class="bio">
-          Passionate frontend developer building modern, responsive web interfaces.
-          I care about every pixel, every transition, and every detail that makes
-          an experience feel considered.
+          I architect and engineer modern frontend systems using the full
+          spectrum of today’s web technologies. From design systems and
+          component architecture to performance optimization and motion design,
+          I build interfaces that are not only beautiful, but structurally
+          sound, scalable, and production-ready.
         </p>
 
         <div class="skills-section">
@@ -108,7 +261,6 @@ const skills = [
           </div>
         </div>
       </div>
-
     </div>
   </section>
 </template>
@@ -202,8 +354,15 @@ const skills = [
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.4; transform: scale(0.7); }
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.7);
+  }
 }
 
 .location {
@@ -369,7 +528,9 @@ h1 em {
 }
 
 @media (max-width: 800px) {
-  .about { padding: 60px 24px 80px; }
+  .about {
+    padding: 60px 24px 80px;
+  }
   .container {
     grid-template-columns: 1fr;
     gap: 48px;
@@ -380,7 +541,11 @@ h1 em {
     align-items: flex-end;
     flex-wrap: wrap;
   }
-  .profile-wrap { width: 140px; }
-  .skill-card { grid-template-columns: 36px 1fr 80px; }
+  .profile-wrap {
+    width: 140px;
+  }
+  .skill-card {
+    grid-template-columns: 36px 1fr 80px;
+  }
 }
 </style>

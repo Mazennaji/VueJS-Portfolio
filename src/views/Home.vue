@@ -1,20 +1,30 @@
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue"
 
+const isDark = ref(document.documentElement.classList.contains("dark"))
+
+let mo
 onMounted(() => {
-  const hero = document.querySelector(".hero");
+  mo = new MutationObserver(() => {
+    isDark.value = document.documentElement.classList.contains("dark")
+  })
+  mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] })
+
+  const hero = document.querySelector(".hero")
   hero.addEventListener("mousemove", (e) => {
-    const rect = hero.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    hero.style.setProperty("--mx", `${x}%`);
-    hero.style.setProperty("--my", `${y}%`);
-  });
-});
+    const rect = hero.getBoundingClientRect()
+    const x = ((e.clientX - rect.left) / rect.width) * 100
+    const y = ((e.clientY - rect.top) / rect.height) * 100
+    hero.style.setProperty("--mx", `${x}%`)
+    hero.style.setProperty("--my", `${y}%`)
+  })
+})
+
+onUnmounted(() => mo?.disconnect())
 </script>
 
 <template>
-  <section class="hero">
+  <section class="hero" :class="{ light: !isDark }">
     <div class="noise" />
     <div class="spotlight" />
 
@@ -45,20 +55,19 @@ onMounted(() => {
 </template>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap");
-
 .hero {
   --mx: 50%;
   --my: 40%;
   position: relative;
   min-height: 100vh;
-  background: #0b0b0e;
+  background: var(--bg-base);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  font-family: "DM Sans", sans-serif;
-  color: #e8e4dc;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  transition: background 0.4s ease, color 0.4s ease;
 }
 
 .noise {
@@ -80,7 +89,14 @@ onMounted(() => {
   );
   pointer-events: none;
   z-index: 1;
-  transition: background 0.1s ease;
+}
+
+.light .spotlight {
+  background: radial-gradient(
+    600px circle at var(--mx) var(--my),
+    rgba(180, 130, 60, 0.06),
+    transparent 60%
+  );
 }
 
 .content {
@@ -99,7 +115,7 @@ onMounted(() => {
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #9a8c78;
+  color: var(--text-secondary);
   margin-bottom: 28px;
   animation: fade-up 0.8s ease both;
 }
@@ -110,25 +126,26 @@ onMounted(() => {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #c9a96e;
+  background: var(--gold);
   animation: pulse 2.4s ease infinite;
 }
 
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.7); }
+  50%       { opacity: 0.5; transform: scale(0.7); }
 }
 
 h1 {
   display: flex;
   flex-direction: column;
-  font-family: "Cormorant Garamond", serif;
+  font-family: var(--font-serif);
   font-size: clamp(64px, 12vw, 140px);
   font-weight: 700;
   line-height: 0.88;
   letter-spacing: -0.03em;
   margin: 0 0 32px;
-  color: #f0ebe2;
+  color: var(--text-primary);
+  transition: color 0.4s ease;
 }
 
 .line {
@@ -136,23 +153,22 @@ h1 {
   animation: fade-up 0.8s ease both;
 }
 
-.line:nth-child(2) {
-  animation-delay: 0.1s;
-}
+.line:nth-child(2) { animation-delay: 0.1s; }
 
 .accent {
   font-style: italic;
-  color: #c9a96e;
+  color: var(--gold);
 }
 
 p {
   font-size: 16px;
   font-weight: 300;
-  color: #6e6a64;
+  color: var(--text-muted);
   letter-spacing: 0.01em;
   line-height: 1.7;
   margin: 0 0 48px;
   animation: fade-up 0.8s ease 0.2s both;
+  transition: color 0.4s ease;
 }
 
 .actions {
@@ -169,38 +185,36 @@ p {
   align-items: center;
   gap: 10px;
   padding: 14px 32px;
-  background: #c9a96e;
-  color: #0b0b0e;
-  font-family: "DM Sans", sans-serif;
+  background: var(--gold);
+  color: var(--bg-base);
+  font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   text-decoration: none;
-  transition: background 0.3s ease, gap 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background 0.3s ease, gap 0.3s var(--ease-spring), color 0.4s ease;
 }
 
 .btn-primary:hover {
-  background: #d9bc88;
+  background: var(--gold-hi);
   gap: 16px;
 }
 
 .btn-arrow {
   font-size: 14px;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.3s var(--ease-spring);
 }
 
-.btn-primary:hover .btn-arrow {
-  transform: translateX(3px);
-}
+.btn-primary:hover .btn-arrow { transform: translateX(3px); }
 
 .btn-ghost {
   display: inline-flex;
   align-items: center;
   padding: 14px 32px;
-  border: 1px solid #2a2a30;
-  color: #9a8c78;
-  font-family: "DM Sans", sans-serif;
+  border: 1px solid var(--border-mid);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.12em;
@@ -210,8 +224,8 @@ p {
 }
 
 .btn-ghost:hover {
-  border-color: #c9a96e;
-  color: #c9a96e;
+  border-color: var(--gold);
+  color: var(--gold);
 }
 
 .scroll-hint {
@@ -230,14 +244,14 @@ p {
 .scroll-line {
   width: 1px;
   height: 48px;
-  background: linear-gradient(to bottom, transparent, #c9a96e);
+  background: linear-gradient(to bottom, transparent, var(--gold));
   animation: grow-line 1.8s ease 1.2s infinite;
   transform-origin: top;
 }
 
 @keyframes grow-line {
-  0% { transform: scaleY(0); opacity: 0; }
-  30% { transform: scaleY(1); opacity: 1; }
+  0%   { transform: scaleY(0); opacity: 0; }
+  30%  { transform: scaleY(1); opacity: 1; }
   100% { transform: scaleY(1); opacity: 0; }
 }
 
@@ -246,7 +260,8 @@ p {
   font-weight: 500;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #4a4640;
+  color: var(--text-faint);
+  transition: color 0.4s ease;
 }
 
 @keyframes fade-up {

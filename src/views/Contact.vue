@@ -1,11 +1,23 @@
 <script setup>
-import { ref } from "vue"
+import { ref, onMounted, onUnmounted } from "vue"
 
-const name = ref("")
-const email = ref("")
+const isDark = ref(document.documentElement.classList.contains("dark"))
+
+let mo
+onMounted(() => {
+  mo = new MutationObserver(() => {
+    isDark.value = document.documentElement.classList.contains("dark")
+  })
+  mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] })
+})
+
+onUnmounted(() => mo?.disconnect())
+
+const name    = ref("")
+const email   = ref("")
 const message = ref("")
 const success = ref(false)
-const error = ref("")
+const error   = ref("")
 const sending = ref(false)
 const focused = ref("")
 
@@ -37,7 +49,7 @@ function submit() {
 </script>
 
 <template>
-  <section class="contact">
+  <section class="contact" :class="{ light: !isDark }">
     <header class="contact-header">
       <span class="overline">Let's talk</span>
       <h1>Contact</h1>
@@ -97,18 +109,17 @@ function submit() {
 </template>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap");
-
 .contact {
   min-height: 100vh;
-  background: #0b0b0e;
+  background: var(--bg-base);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 80px 24px 100px;
-  font-family: "DM Sans", sans-serif;
-  color: #e8e4dc;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  transition: background 0.4s ease, color 0.4s ease;
   animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
@@ -128,24 +139,26 @@ function submit() {
   font-weight: 500;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: #9a8c78;
+  color: var(--text-secondary);
   margin-bottom: 12px;
+  transition: color 0.4s ease;
 }
 
 h1 {
-  font-family: "Cormorant Garamond", serif;
+  font-family: var(--font-serif);
   font-size: clamp(52px, 8vw, 88px);
   font-weight: 700;
   line-height: 0.9;
-  color: #f0ebe2;
+  color: var(--text-primary);
   margin: 0 0 24px;
   letter-spacing: -0.02em;
+  transition: color 0.4s ease;
 }
 
 .header-line {
   width: 48px;
   height: 2px;
-  background: #c9a96e;
+  background: var(--gold);
   margin: 0 auto;
 }
 
@@ -160,7 +173,8 @@ h1 {
 .field {
   position: relative;
   margin-bottom: 2px;
-  background: #111115;
+  background: var(--bg-surface);
+  transition: background 0.4s ease;
 }
 
 .field label {
@@ -170,7 +184,7 @@ h1 {
   transform: translateY(-50%);
   font-size: 13px;
   font-weight: 400;
-  color: #4a4640;
+  color: var(--text-faint);
   pointer-events: none;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   letter-spacing: 0.03em;
@@ -187,32 +201,28 @@ h1 {
   font-size: 10px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #c9a96e;
+  color: var(--gold);
 }
 
-.textarea-field.active label {
-  top: 10px;
-}
+.textarea-field.active label { top: 10px; }
 
 input, textarea {
   width: 100%;
   padding: 28px 20px 10px;
   background: transparent;
   border: none;
-  border-bottom: 1px solid #1e1e24;
-  color: #f0ebe2;
-  font-family: "DM Sans", sans-serif;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 300;
   outline: none;
   box-sizing: border-box;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, color 0.4s ease;
   resize: none;
 }
 
-input:focus, textarea:focus {
-  border-bottom-color: #c9a96e;
-}
+input:focus, textarea:focus { border-bottom-color: var(--gold); }
 
 textarea {
   padding-top: 28px;
@@ -237,18 +247,15 @@ textarea {
   flex-shrink: 0;
 }
 
-.error { color: #b05535; }
-.error .status-dot { background: #b05535; }
-
-.success { color: #7a9e6a; }
+.error              { color: #b05535; }
+.error .status-dot  { background: #b05535; }
+.success            { color: #7a9e6a; }
 .success .status-dot { background: #7a9e6a; }
 
-.status-enter-active,
-.status-leave-active {
+.status-enter-active, .status-leave-active {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
-.status-enter-from,
-.status-leave-to {
+.status-enter-from, .status-leave-to {
   opacity: 0;
   transform: translateY(6px);
 }
@@ -259,10 +266,10 @@ textarea {
   align-items: center;
   justify-content: space-between;
   padding: 18px 28px;
-  background: #111115;
-  border: 1px solid #1e1e24;
-  color: #9a8c78;
-  font-family: "DM Sans", sans-serif;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.18em;
@@ -270,28 +277,22 @@ textarea {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: color 0.3s ease, border-color 0.3s ease;
+  transition: color 0.3s ease, border-color 0.3s ease, background 0.4s ease;
 }
 
 .btn::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: #c9a96e;
+  background: var(--gold);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 0;
 }
 
-.btn:hover::before {
-  transform: scaleX(1);
-}
-
-.btn:hover {
-  color: #0b0b0e;
-  border-color: #c9a96e;
-}
+.btn:hover::before  { transform: scaleX(1); }
+.btn:hover          { color: var(--bg-base); border-color: var(--gold); }
 
 .btn-label,
 .btn-arrow {
@@ -300,9 +301,7 @@ textarea {
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.btn:hover .btn-arrow {
-  transform: translateX(4px);
-}
+.btn:hover .btn-arrow { transform: translateX(4px); }
 
 .btn.sending {
   pointer-events: none;

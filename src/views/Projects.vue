@@ -1,31 +1,41 @@
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, onUnmounted, ref } from "vue"
 
-const projects = [
-  { title: "Landing Page", desc: "Responsive landing page", img: "/landingpage.png", tag: "Web Design" },
-  { title: "Dashboard UI", desc: "Admin dashboard", img: "/dashboard.png", tag: "UI/UX" },
-  { title: "Portfolio", desc: "Vue portfolio site", img: "/portfolio.png", tag: "Development" },
-];
+const isDark = ref(document.documentElement.classList.contains("dark"))
 
+let mo
 onMounted(() => {
-  const cards = document.querySelectorAll(".card");
+  mo = new MutationObserver(() => {
+    isDark.value = document.documentElement.classList.contains("dark")
+  })
+  mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] })
+
+  const cards = document.querySelectorAll(".card")
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add("show");
-          observer.unobserve(entry.target);
+          entry.target.classList.add("show")
+          observer.unobserve(entry.target)
         }
-      });
+      })
     },
     { threshold: 0.15 }
-  );
-  cards.forEach((card) => observer.observe(card));
-});
+  )
+  cards.forEach((card) => observer.observe(card))
+})
+
+onUnmounted(() => mo?.disconnect())
+
+const projects = [
+  { title: "Landing Page", desc: "Responsive landing page", img: "/landingpage.png", tag: "Web Design" },
+  { title: "Dashboard UI", desc: "Admin dashboard",        img: "/dashboard.png",    tag: "UI/UX" },
+  { title: "Portfolio",    desc: "Vue portfolio site",     img: "/portfolio.png",    tag: "Development" },
+]
 </script>
 
 <template>
-  <section class="projects">
+  <section class="projects" :class="{ light: !isDark }">
     <header class="projects-header">
       <span class="overline">Selected Work</span>
       <h1>Projects</h1>
@@ -57,19 +67,16 @@ onMounted(() => {
 </template>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap");
-
 .projects {
   min-height: 100vh;
-  background: #0b0b0e;
+  background: var(--bg-base);
   padding: 80px 60px 100px;
-  font-family: "DM Sans", sans-serif;
-  color: #e8e4dc;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  transition: background 0.4s ease, color 0.4s ease;
 }
 
-.projects-header {
-  margin-bottom: 64px;
-}
+.projects-header { margin-bottom: 64px; }
 
 .overline {
   display: block;
@@ -77,24 +84,26 @@ onMounted(() => {
   font-weight: 500;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: #9a8c78;
+  color: var(--text-secondary);
   margin-bottom: 12px;
+  transition: color 0.4s ease;
 }
 
 h1 {
-  font-family: "Cormorant Garamond", serif;
+  font-family: var(--font-serif);
   font-size: clamp(52px, 8vw, 96px);
   font-weight: 700;
   line-height: 0.9;
-  color: #f0ebe2;
+  color: var(--text-primary);
   margin: 0 0 28px;
   letter-spacing: -0.02em;
+  transition: color 0.4s ease;
 }
 
 .header-line {
   width: 48px;
   height: 2px;
-  background: #c9a96e;
+  background: var(--gold);
 }
 
 .grid {
@@ -104,14 +113,16 @@ h1 {
 }
 
 .card {
-  background: #111115;
+  background: var(--bg-surface);
   position: relative;
   overflow: hidden;
   cursor: pointer;
   opacity: 0;
   transform: translateY(32px);
-  transition: opacity 0.7s ease var(--delay, 0ms),
-              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--delay, 0ms);
+  transition:
+    opacity 0.7s ease var(--delay, 0ms),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--delay, 0ms),
+    background 0.4s ease;
 }
 
 .card.show {
@@ -123,7 +134,8 @@ h1 {
   position: relative;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  background: #1a1a1f;
+  background: var(--bg-raised);
+  transition: background 0.4s ease;
 }
 
 .project-img {
@@ -135,29 +147,37 @@ h1 {
   filter: brightness(0.85) saturate(0.9);
 }
 
+.light .project-img {
+  filter: brightness(0.95) saturate(0.95);
+}
+
 .card-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to bottom,
     transparent 40%,
-    rgba(11, 11, 14, 0.6) 100%
+    rgba(var(--bg-base-rgb, 11, 11, 14), 0.6) 100%
   );
   transition: opacity 0.4s ease;
 }
 
-.card:hover .project-img {
-  transform: scale(1.06);
+.light .card-overlay {
+  background: linear-gradient(
+    to bottom,
+    transparent 40%,
+    rgba(240, 235, 226, 0.5) 100%
+  );
 }
 
-.card:hover .card-overlay {
-  opacity: 0.7;
-}
+.card:hover .project-img  { transform: scale(1.06); }
+.card:hover .card-overlay { opacity: 0.7; }
 
 .card-body {
   padding: 28px 28px 32px;
-  border-top: 1px solid #1e1e24;
+  border-top: 1px solid var(--border-subtle);
   position: relative;
+  transition: border-color 0.4s ease;
 }
 
 .card-body::before {
@@ -167,15 +187,13 @@ h1 {
   left: 0;
   right: 0;
   height: 2px;
-  background: #c9a96e;
+  background: var(--gold);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.card:hover .card-body::before {
-  transform: scaleX(1);
-}
+.card:hover .card-body::before { transform: scaleX(1); }
 
 .tag {
   display: inline-block;
@@ -183,31 +201,28 @@ h1 {
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #c9a96e;
+  color: var(--gold);
   margin-bottom: 10px;
 }
 
 .card-body h3 {
-  font-family: "Cormorant Garamond", serif;
+  font-family: var(--font-serif);
   font-size: 26px;
   font-weight: 600;
-  color: #f0ebe2;
+  color: var(--text-primary);
   margin: 0 0 8px;
   letter-spacing: -0.01em;
   line-height: 1.15;
+  transition: color 0.4s ease;
 }
 
 .card-body p {
   font-size: 13.5px;
   font-weight: 300;
-  color: #7a7570;
+  color: var(--text-muted);
   margin: 0 0 20px;
   line-height: 1.6;
-}
-
-.card-footer {
-  display: flex;
-  align-items: center;
+  transition: color 0.4s ease;
 }
 
 .view-link {
@@ -215,7 +230,7 @@ h1 {
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #9a8c78;
+  color: var(--text-secondary);
   transition: color 0.3s ease;
   display: flex;
   align-items: center;
@@ -227,11 +242,6 @@ h1 {
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.card:hover .view-link {
-  color: #c9a96e;
-}
-
-.card:hover .arrow {
-  transform: translateX(5px);
-}
+.card:hover .view-link  { color: var(--gold); }
+.card:hover .arrow      { transform: translateX(5px); }
 </style>

@@ -1,3 +1,50 @@
+<script setup>
+import { onMounted, ref } from "vue"
+
+const isDark = ref(document.documentElement.classList.contains("dark"))
+
+const observer = new MutationObserver(() => {
+  isDark.value = document.documentElement.classList.contains("dark")
+})
+
+onMounted(() => {
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  })
+
+  const cards = document.querySelectorAll(".skill-card")
+  const bars  = document.querySelectorAll(".skill-bar-fill")
+
+  const cardObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("show") })
+  }, { threshold: 0.15 })
+
+  const barObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("grow") })
+  }, { threshold: 0.3 })
+
+  cards.forEach(c => cardObs.observe(c))
+  bars.forEach(b => barObs.observe(b))
+})
+
+const skills = [
+  { name: "HTML5",      level: "95%", colorDark: "#E34F26", colorLight: "#E34F26", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/html5.svg" },
+  { name: "CSS3",       level: "90%", colorDark: "#1572B6", colorLight: "#1572B6", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/css3.svg" },
+  { name: "JavaScript", level: "85%", colorDark: "#F7DF1E", colorLight: "#c9a800", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/javascript.svg" },
+  { name: "TypeScript", level: "80%", colorDark: "#3178C6", colorLight: "#3178C6", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/typescript.svg" },
+  { name: "Vue.js",     level: "90%", colorDark: "#4FC08D", colorLight: "#368a62", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/vuedotjs.svg" },
+  { name: "React",      level: "85%", colorDark: "#61DAFB", colorLight: "#0a9bb5", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/react.svg" },
+  { name: "Svelte",     level: "70%", colorDark: "#FF3E00", colorLight: "#FF3E00", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/svelte.svg" },
+  { name: "Tailwind",   level: "80%", colorDark: "#06B6D4", colorLight: "#0284a0", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/tailwindcss.svg" },
+  { name: "Bootstrap",  level: "80%", colorDark: "#7952B3", colorLight: "#7952B3", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/bootstrap.svg" },
+  { name: "Git",        level: "75%", colorDark: "#F05032", colorLight: "#F05032", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/git.svg" },
+  { name: "GitHub",     level: "80%", colorDark: "#F1F1F1", colorLight: "#1a1a1a", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/github.svg" },
+  { name: "Angular",    level: "70%", colorDark: "#DD0031", colorLight: "#DD0031", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/angular.svg" },
+  { name: "Grunt",      level: "60%", colorDark: "#FAA918", colorLight: "#c47d00", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/grunt.svg" },
+]
+</script>
+
 <template>
   <section class="about">
     <div class="container">
@@ -41,7 +88,7 @@
               <div class="skill-icon-wrap">
                 <span
                   class="skill-icon"
-                  :style="`--mask: url('${s.logo}'); --brand: ${s.color}`"
+                  :style="`--mask: url('${s.logo}'); --brand: ${isDark ? s.colorDark : s.colorLight}`"
                 />
               </div>
               <div class="skill-info">
@@ -59,42 +106,6 @@
     </div>
   </section>
 </template>
-
-<script setup>
-import { onMounted } from "vue"
-
-const skills = [
-  { name: "HTML5",      level: "95%", color: "#E34F26", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/html5.svg" },
-  { name: "CSS3",       level: "90%", color: "#1572B6", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/css3.svg" },
-  { name: "JavaScript", level: "85%", color: "#F7DF1E", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/javascript.svg" },
-  { name: "TypeScript", level: "80%", color: "#3178C6", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/typescript.svg" },
-  { name: "Vue.js",     level: "90%", color: "#4FC08D", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/vuedotjs.svg" },
-  { name: "React",      level: "85%", color: "#61DAFB", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/react.svg" },
-  { name: "Svelte",     level: "70%", color: "#FF3E00", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/svelte.svg" },
-  { name: "Tailwind",   level: "80%", color: "#06B6D4", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/tailwindcss.svg" },
-  { name: "Bootstrap",  level: "80%", color: "#7952B3", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/bootstrap.svg" },
-  { name: "Git",        level: "75%", color: "#F05032", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/git.svg" },
-  { name: "GitHub",     level: "80%", color: "#181717", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/github.svg" },
-  { name: "Angular",      level: "70%", color: "#F00", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/angular.svg" },
-  { name: "Grunt",      level: "60%", color: "#FAA918", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/grunt.svg" },
-]
-
-onMounted(() => {
-  const cards = document.querySelectorAll(".skill-card")
-  const bars  = document.querySelectorAll(".skill-bar-fill")
-
-  const cardObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("show") })
-  }, { threshold: 0.15 })
-
-  const barObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("grow") })
-  }, { threshold: 0.3 })
-
-  cards.forEach(c => cardObs.observe(c))
-  bars.forEach(b => barObs.observe(b))
-})
-</script>
 
 <style scoped>
 .about {
@@ -286,7 +297,7 @@ h1 em {
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.7;
+  opacity: 0.8;
   transition: opacity 0.3s ease;
 }
 
@@ -307,6 +318,7 @@ h1 em {
   mask-repeat: no-repeat;
   -webkit-mask-position: center;
   mask-position: center;
+  transition: background-color 0.4s ease;
 }
 
 .skill-info {

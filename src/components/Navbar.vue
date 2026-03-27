@@ -21,13 +21,13 @@
           <svg v-if="!isDark" viewBox="0 0 24 24" fill="none" class="theme-icon">
             <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.5"/>
             <g stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-              <line x1="12" y1="2.5" x2="12" y2="4.5"/>
+              <line x1="12" y1="2.5"  x2="12" y2="4.5"/>
               <line x1="12" y1="19.5" x2="12" y2="21.5"/>
               <line x1="2.5"  y1="12" x2="4.5"  y2="12"/>
               <line x1="19.5" y1="12" x2="21.5" y2="12"/>
-              <line x1="5.6"  y1="5.6"  x2="7"   y2="7"/>
+              <line x1="5.6"  y1="5.6"  x2="7"    y2="7"/>
               <line x1="17"   y1="17"   x2="18.4" y2="18.4"/>
-              <line x1="18.4" y1="5.6"  x2="17"  y2="7"/>
+              <line x1="18.4" y1="5.6"  x2="17"   y2="7"/>
               <line x1="7"    y1="17"   x2="5.6"  y2="18.4"/>
             </g>
           </svg>
@@ -70,42 +70,39 @@ defineProps({ isDark: Boolean })
 defineEmits(["toggle-dark"])
 
 const links = [
-  { to: "/",        label: "Home"     },
-  { to: "/about",   label: "About"    },
-  { to: "/projects",label: "Projects" },
-  { to: "/contact", label: "Contact"  },
+  { to: "/",         label: "Home"     },
+  { to: "/about",    label: "About"    },
+  { to: "/projects", label: "Projects" },
+  { to: "/contact",  label: "Contact"  },
 ]
 
 const openMenu = ref(false)
-const scrolled  = ref(false)
+const scrolled = ref(false)
 
 function toggleMenu() { openMenu.value = !openMenu.value }
-
-function onScroll() { scrolled.value = window.scrollY > 40 }
+function onScroll()   { scrolled.value = window.scrollY > 40 }
 
 onMounted(()  => window.addEventListener("scroll", onScroll))
 onUnmounted(() => window.removeEventListener("scroll", onScroll))
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&family=DM+Sans:wght@300;400;500&display=swap");
-
 nav {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 200;
-  font-family: "DM Sans", sans-serif;
+  font-family: var(--font-sans);
   transition: background 0.4s ease, border-color 0.4s ease;
   border-bottom: 1px solid transparent;
 }
 
 nav.scrolled {
-  background: rgba(11, 11, 14, 0.85);
+  background: color-mix(in srgb, var(--bg-base) 85%, transparent);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom-color: #1e1e24;
+  border-bottom-color: var(--border-subtle);
 }
 
 .nav-inner {
@@ -119,17 +116,17 @@ nav.scrolled {
 }
 
 .wordmark {
-  font-family: "Cormorant Garamond", serif;
+  font-family: var(--font-serif);
   font-size: 22px;
   font-weight: 700;
-  color: #f0ebe2;
+  color: var(--text-primary);
   text-decoration: none;
   letter-spacing: -0.01em;
   flex-shrink: 0;
   transition: color 0.3s ease;
 }
 
-.wordmark:hover { color: #c9a96e; }
+.wordmark:hover { color: var(--gold); }
 
 .nav-links {
   display: flex;
@@ -143,7 +140,7 @@ nav.scrolled {
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #6e6a64;
+  color: var(--text-muted);
   text-decoration: none;
   padding-bottom: 2px;
   transition: color 0.3s ease;
@@ -151,7 +148,7 @@ nav.scrolled {
 
 .nav-link:hover,
 .nav-link.router-link-active {
-  color: #f0ebe2;
+  color: var(--text-primary);
 }
 
 .link-dot {
@@ -162,7 +159,7 @@ nav.scrolled {
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: #c9a96e;
+  background: var(--gold);
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -185,15 +182,15 @@ nav.scrolled {
   align-items: center;
   justify-content: center;
   background: none;
-  border: 1px solid #1e1e24;
-  color: #6e6a64;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
   cursor: pointer;
   transition: color 0.3s ease, border-color 0.3s ease;
 }
 
 .theme-btn:hover {
-  color: #c9a96e;
-  border-color: #c9a96e;
+  color: var(--gold);
+  border-color: var(--gold);
 }
 
 .theme-icon {
@@ -210,18 +207,18 @@ nav.scrolled {
   width: 36px;
   height: 36px;
   background: none;
-  border: 1px solid #1e1e24;
+  border: 1px solid var(--border-subtle);
   cursor: pointer;
   padding: 0 9px;
   transition: border-color 0.3s ease;
 }
 
-.burger:hover { border-color: #c9a96e; }
+.burger:hover { border-color: var(--gold); }
 
 .bar {
   display: block;
   height: 1px;
-  background: #9a8c78;
+  background: var(--text-secondary);
   transition: width 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
 }
 
@@ -241,9 +238,10 @@ nav.scrolled {
 .mobile-menu {
   display: flex;
   flex-direction: column;
-  background: #0b0b0e;
-  border-top: 1px solid #1e1e24;
+  background: var(--bg-base);
+  border-top: 1px solid var(--border-subtle);
   padding: 8px 0 24px;
+  transition: background 0.4s ease;
 }
 
 .mobile-link {
@@ -255,29 +253,29 @@ nav.scrolled {
   font-weight: 400;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #6e6a64;
+  color: var(--text-muted);
   text-decoration: none;
-  border-bottom: 1px solid #111115;
+  border-bottom: 1px solid var(--border-subtle);
   transition: color 0.3s ease, padding-left 0.3s ease;
   animation: slide-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 50ms) both;
 }
 
 .mobile-link:hover,
 .mobile-link.router-link-active {
-  color: #f0ebe2;
+  color: var(--text-primary);
   padding-left: 40px;
 }
 
 .mobile-num {
-  font-family: "Cormorant Garamond", serif;
+  font-family: var(--font-serif);
   font-size: 15px;
-  color: #2a2a30;
+  color: var(--border-mid);
   font-weight: 700;
   min-width: 24px;
   transition: color 0.3s ease;
 }
 
-.mobile-link:hover .mobile-num { color: #c9a96e; }
+.mobile-link:hover .mobile-num { color: var(--gold); }
 
 .mobile-arrow {
   margin-left: auto;
@@ -294,8 +292,8 @@ nav.scrolled {
 
 .mobile-menu-enter-active { transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
 .mobile-menu-leave-active { transition: opacity 0.2s ease, transform 0.25s ease; }
-.mobile-menu-enter-from  { opacity: 0; transform: translateY(-8px); }
-.mobile-menu-leave-to    { opacity: 0; transform: translateY(-4px); }
+.mobile-menu-enter-from   { opacity: 0; transform: translateY(-8px); }
+.mobile-menu-leave-to     { opacity: 0; transform: translateY(-4px); }
 
 @keyframes slide-in {
   from { opacity: 0; transform: translateX(-12px); }

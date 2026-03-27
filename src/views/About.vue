@@ -53,12 +53,12 @@ const tools = [
   { name: "WebStorm",  tag: "editor",  icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/webstorm/webstorm-original.svg" },
   { name: "GitHub",   tag: "vcs",     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" },
   { name: "Figma",    tag: "design",  icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" },
-  { name: "Postman",  tag: "api",     icon: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/postman.svg" },
+  { name: "Postman",  tag: "api",     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg" },
   { name: "Chrome",   tag: "browser", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/chrome/chrome-original.svg" },
-  { name: "Ubuntu",   tag: "os",      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ubuntu/ubuntu-plain.svg" },
+  { name: "Ubuntu",   tag: "os",      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ubuntu/ubuntu-original.svg" },
   { name: "Vercel",   tag: "hosting", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg" },
-  { name: "Vite",     tag: "build",   icon: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/vite.svg" },
-  { name: "Notion",   tag: "notes",   icon: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/notion.svg" },
+  { name: "Vite",     tag: "build",   icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vite/vite-original.svg" },
+  { name: "Notion",   tag: "notes",   icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/notion/notion-original.svg" },
 ];
 
 const skills = [

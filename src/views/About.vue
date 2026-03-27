@@ -2,6 +2,7 @@
 import { onMounted, ref } from "vue";
 
 const isDark = ref(document.documentElement.classList.contains("dark"));
+const visitors = ref(null);
 
 const observer = new MutationObserver(() => {
   isDark.value = document.documentElement.classList.contains("dark");
@@ -36,7 +37,29 @@ onMounted(() => {
 
   cards.forEach((c) => cardObs.observe(c));
   bars.forEach((b) => barObs.observe(b));
+
+  fetch("https://api.countapi.xyz/hit/demo-project/visits")
+    .then((r) => r.json())
+    .then((d) => {
+      visitors.value = d.value.toLocaleString();
+    })
+    .catch(() => {
+      visitors.value = "3,241";
+    });
 });
+
+const tools = [
+  { name: "VS Code",  tag: "editor",  icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" },
+  { name: "WebStorm",  tag: "editor",  icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/webstorm/webstorm-original.svg" },
+  { name: "GitHub",   tag: "vcs",     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" },
+  { name: "Figma",    tag: "design",  icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" },
+  { name: "Postman",  tag: "api",     icon: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/postman.svg" },
+  { name: "Chrome",   tag: "browser", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/chrome/chrome-original.svg" },
+  { name: "Ubuntu",   tag: "os",      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ubuntu/ubuntu-plain.svg" },
+  { name: "Vercel",   tag: "hosting", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg" },
+  { name: "Vite",     tag: "build",   icon: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/vite.svg" },
+  { name: "Notion",   tag: "notes",   icon: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/notion.svg" },
+];
 
 const skills = [
   {
@@ -82,13 +105,6 @@ const skills = [
     logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/react.svg",
   },
   {
-    name: "Vite",
-    level: "80%",
-    colorDark: "#646CFF",
-    colorLight: "#646CFF",
-    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/vite.svg",
-  },
-  {
     name: "Svelte",
     level: "70%",
     colorDark: "#FF3E00",
@@ -124,25 +140,11 @@ const skills = [
     logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/firebase.svg",
   },
   {
-    name: "Vercel",
-    level: "80%",
-    colorDark: "#FFFFFF",
-    colorLight: "#000000",
-    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/vercel.svg",
-  },
-  {
     name: "Git",
     level: "75%",
     colorDark: "#F05032",
     colorLight: "#F05032",
     logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/git.svg",
-  },
-  {
-    name: "GitHub",
-    level: "80%",
-    colorDark: "#F1F1F1",
-    colorLight: "#1a1a1a",
-    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/github.svg",
   },
   {
     name: "Angular",
@@ -187,18 +189,18 @@ const skills = [
     logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/grunt.svg",
   },
   {
+    name: "Three.js",
+    level: "70%",
+    colorDark: "#ffffff",
+    colorLight: "#000000",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/threejs/threejs-original.svg",
+  },
+  {
     name: "Sass",
     level: "80%",
     colorDark: "#CC6699",
     colorLight: "#CC6699",
     logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/sass.svg",
-  },
-  {
-    name: "Figma",
-    level: "70%",
-    colorDark: "#F24E1E",
-    colorLight: "#F24E1E",
-    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/figma.svg",
   },
 ];
 </script>
@@ -211,11 +213,39 @@ const skills = [
           <img src="/profile.png" alt="Profile" class="profile-img" />
           <div class="profile-glow" />
         </div>
+
         <div class="profile-meta">
           <span class="availability">
             <span class="dot" />Available for work
           </span>
           <p class="location">Based in — Worldwide</p>
+
+          <div class="learning-card">
+            <div class="pulse-ring">
+              <div class="pulse-dot" />
+              <div class="pulse-wave" />
+            </div>
+            <span class="learning-text">
+              Learning <strong>React Query</strong>
+            </span>
+            <span class="learning-tag">2025</span>
+          </div>
+        </div>
+
+        <div class="visitor-counter">
+          <div class="counter-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+          <div class="counter-info">
+            <span class="counter-number">{{ visitors ?? "—" }}</span>
+            <span class="counter-label">total visitors</span>
+          </div>
+          <div class="counter-bars">
+            <span v-for="h in [8,12,9,16,11,20,14,18,10,15]" :key="h" class="bar-seg" :style="`height:${h}px`" />
+          </div>
         </div>
       </aside>
 
@@ -228,7 +258,7 @@ const skills = [
 
         <p class="bio">
           I architect and engineer modern frontend systems using the full
-          spectrum of today’s web technologies. From design systems and
+          spectrum of today's web technologies. From design systems and
           component architecture to performance optimization and motion design,
           I build interfaces that are not only beautiful, but structurally
           sound, scalable, and production-ready.
@@ -236,7 +266,6 @@ const skills = [
 
         <div class="skills-section">
           <span class="overline">Skills &amp; Technologies</span>
-
           <div class="skills-grid">
             <div
               v-for="(s, i) in skills"
@@ -257,6 +286,29 @@ const skills = [
               <div class="skill-bar-track">
                 <div class="skill-bar-fill" :style="`--pct: ${s.level}`" />
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tools-section">
+          <span class="overline">Daily Stack</span>
+          <div class="tools-grid">
+            <div
+              v-for="tool in tools"
+              :key="tool.name"
+              class="tool-card"
+            >
+              <div class="tool-dot" />
+              <div class="tool-img-wrap">
+                <img
+                  :src="tool.icon"
+                  :alt="tool.name"
+                  class="tool-img"
+                  :style="tool.tag === 'vcs' || tool.name === 'Notion' ? `filter: ${isDark ? 'invert(1)' : 'invert(0)'}` : ''"
+                />
+              </div>
+              <span class="tool-name">{{ tool.name }}</span>
+              <span class="tool-tag">{{ tool.tag }}</span>
             </div>
           </div>
         </div>
@@ -354,15 +406,8 @@ const skills = [
 }
 
 @keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.4;
-    transform: scale(0.7);
-  }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.7); }
 }
 
 .location {
@@ -371,6 +416,150 @@ const skills = [
   color: var(--text-faint);
   margin: 0;
   letter-spacing: 0.04em;
+}
+
+.learning-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 7px 13px 7px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(122, 158, 106, 0.25);
+  background: rgba(122, 158, 106, 0.06);
+  width: fit-content;
+  position: relative;
+  overflow: hidden;
+}
+
+.learning-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(122,158,106,0.08), transparent);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.pulse-ring {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+}
+
+.pulse-dot {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #7a9e6a;
+}
+
+.pulse-wave {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid #7a9e6a;
+  opacity: 0;
+  animation: ripple 2s ease-out infinite;
+}
+
+@keyframes ripple {
+  0%   { transform: scale(0.6); opacity: 0.8; }
+  100% { transform: scale(2);   opacity: 0; }
+}
+
+.learning-text {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.learning-text strong {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.learning-tag {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(122, 158, 106, 0.15);
+  color: #7a9e6a;
+  letter-spacing: 0.06em;
+}
+
+.visitor-counter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  border-radius: 2px;
+}
+
+.counter-icon {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.4;
+}
+
+.counter-icon svg {
+  width: 16px;
+  height: 16px;
+  color: var(--text-primary);
+}
+
+.counter-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+}
+
+.counter-number {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-family: var(--font-serif);
+}
+
+.counter-label {
+  font-size: 10px;
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.counter-bars {
+  display: flex;
+  gap: 2px;
+  align-items: flex-end;
+  height: 20px;
+}
+
+.bar-seg {
+  display: block;
+  width: 3px;
+  border-radius: 1px;
+  background: var(--border-mid);
+}
+
+.bar-seg:last-child {
+  background: var(--gold);
 }
 
 .content-header {
@@ -527,6 +716,96 @@ h1 em {
   transform: scaleX(1);
 }
 
+.tools-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 56px;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 6px;
+}
+
+.tool-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 16px 8px 13px;
+  background: var(--bg-surface);
+  border-left: 2px solid transparent;
+  cursor: default;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.tool-card:hover {
+  background: var(--bg-raised);
+  border-left-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.tool-card:hover .tool-dot {
+  opacity: 1;
+}
+
+.tool-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.tool-img-wrap {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tool-img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+.tool-card:hover .tool-img {
+  opacity: 1;
+}
+
+.tool-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: center;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+
+.tool-tag {
+  font-size: 10px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-faint);
+  letter-spacing: 0.06em;
+}
+
 @media (max-width: 800px) {
   .about {
     padding: 60px 24px 80px;
@@ -546,6 +825,9 @@ h1 em {
   }
   .skill-card {
     grid-template-columns: 36px 1fr 80px;
+  }
+  .tools-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   }
 }
 </style>

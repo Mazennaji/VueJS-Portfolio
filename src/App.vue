@@ -1,5 +1,7 @@
 <template>
   <div class="app-root">
+    <Preloader />
+    <CustomCursor />
     <div class="progress-bar" :class="{ active: isNavigating }" />
     <Navbar :isDark="isDark" @toggle-dark="toggleDark" />
     <main class="app-main">
@@ -10,46 +12,41 @@
       </router-view>
     </main>
     <Footer />
+    <BackToTop />
   </div>
 </template>
 
 <script setup>
 import { ref, watch, onMounted } from "vue"
 import { useRouter } from "vue-router"
-import Navbar from "./components/Navbar.vue"
-import Footer from "./components/Footer.vue"
+import Navbar       from "./components/Navbar.vue"
+import Footer       from "./components/Footer.vue"
+import Preloader    from "./components/Preloader.vue"
+import CustomCursor from "./components/CustomCursor.vue"
+import BackToTop    from "./components/BackToTop.vue"
 
-const isDark      = ref(false)
+const isDark       = ref(false)
 const isNavigating = ref(false)
 
 onMounted(() => {
   isDark.value = window.matchMedia("(prefers-color-scheme: dark)").matches
 })
 
-function toggleDark() {
-  isDark.value = !isDark.value
-}
+function toggleDark() { isDark.value = !isDark.value }
 
 watch(isDark, (val) => {
   document.documentElement.classList.toggle("dark", val)
 }, { immediate: true })
 
 const router = useRouter()
-
 router.beforeEach(() => { isNavigating.value = true })
-router.afterEach(()  => {
-  setTimeout(() => { isNavigating.value = false }, 400)
-})
+router.afterEach(()  => { setTimeout(() => { isNavigating.value = false }, 400) })
 </script>
 
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,700;1,700&family=DM+Sans:wght@300;400;500&display=swap");
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
   --gold:    #c9a96e;
@@ -93,7 +90,10 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
+  cursor: none;
 }
+
+@media (hover: none) { html { cursor: auto; } }
 
 html, body { min-height: 100%; }
 
@@ -105,27 +105,15 @@ body {
   transition: background 0.4s ease, color 0.4s ease;
 }
 
-#app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+#app { min-height: 100vh; display: flex; flex-direction: column; }
 
-.app-root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+.app-root { min-height: 100vh; display: flex; flex-direction: column; }
 
-.app-main {
-  flex: 1;
-  padding-top: 68px;
-}
+.app-main { flex: 1; padding-top: 68px; }
 
 .progress-bar {
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   height: 2px;
   width: 0%;
   background: var(--gold);
@@ -134,15 +122,12 @@ body {
   opacity: 0;
 }
 
-.progress-bar.active {
-  width: 70%;
-  opacity: 1;
-}
+.progress-bar.active { width: 70%; opacity: 1; }
 
-::selection {
-  background: var(--gold);
-  color: var(--bg-base);
-}
+* { cursor: none; }
+a, button, [role="button"], .card, .filter-btn { cursor: none; }
+
+::selection { background: var(--gold); color: var(--bg-base); }
 
 ::-webkit-scrollbar        { width: 4px; }
 ::-webkit-scrollbar-track  { background: var(--bg-base); }

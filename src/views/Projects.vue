@@ -2,8 +2,8 @@
 import { ref, computed, onMounted, onUnmounted } from "vue"
 
 const isDark = ref(document.documentElement.classList.contains("dark"))
-
 let mo
+
 onMounted(() => {
   mo = new MutationObserver(() => {
     isDark.value = document.documentElement.classList.contains("dark")
@@ -13,23 +13,32 @@ onMounted(() => {
 onUnmounted(() => mo?.disconnect())
 
 const projects = [
-  { title: "Landing Page",   desc: "Responsive landing page",  img: "/landingpage.png", tag: "Web Design"  },
-  { title: "Dashboard UI",   desc: "Admin dashboard",          img: "/dashboard.png",   tag: "UI/UX"       },
-  { title: "Portfolio",      desc: "Vue portfolio site",       img: "/portfolio.png",   tag: "Development" },
-  { title: "E-commerce UI",  desc: "Product listing page",     img: "/ecommerce.png",   tag: "Web Design"  },
-  { title: "Analytics App",  desc: "Data visualization tool",  img: "/analytics.png",   tag: "UI/UX"       },
-  { title: "Component Lib",  desc: "Reusable Vue components",  img: "/components.png",  tag: "Development" },
+  { title: "Landing Page",  desc: "Responsive landing page", img: "/landingpage.png", tag: "Web Design"  },
+  { title: "Dashboard UI",  desc: "Admin dashboard",         img: "/dashboard.png",   tag: "UI/UX"       },
+  { title: "Portfolio",     desc: "Vue portfolio site",      img: "/portfolio.png",   tag: "Development" },
+  { title: "E-commerce UI", desc: "Product listing page",    img: "/ecommerce.png",   tag: "Web Design"  },
+  { title: "Analytics App", desc: "Data visualization tool", img: "/analytics.png",   tag: "UI/UX"       },
+  { title: "Component Lib", desc: "Reusable Vue components", img: "/components.png",  tag: "Development" },
 ]
 
-const tags    = ["All", ...new Set(projects.map(p => p.tag))]
-const active  = ref("All")
+const tags   = ["All", ...new Set(projects.map(p => p.tag))]
+const active = ref("All")
 
 const filtered = computed(() =>
   active.value === "All" ? projects : projects.filter(p => p.tag === active.value)
 )
 
-function setFilter(tag) {
-  active.value = tag
+function setFilter(tag) { active.value = tag }
+
+function onTilt(e, el) {
+  const rect   = el.getBoundingClientRect()
+  const x      = (e.clientX - rect.left) / rect.width  - 0.5
+  const y      = (e.clientY - rect.top)  / rect.height - 0.5
+  el.style.transform = `perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) scale(1.02)`
+}
+
+function resetTilt(el) {
+  el.style.transform = "perspective(800px) rotateY(0deg) rotateX(0deg) scale(1)"
 }
 </script>
 
@@ -60,6 +69,8 @@ function setFilter(tag) {
           :key="p.title"
           class="card show"
           :style="`--delay: ${i * 80}ms`"
+          @mousemove="e => onTilt(e, $el)"
+          @mouseleave="e => resetTilt($el)"
         >
           <div class="card-media">
             <img :src="p.img" :alt="p.title" class="project-img" />
@@ -113,10 +124,7 @@ h1 {
   transition: color 0.4s ease;
 }
 
-h1 em {
-  font-style: italic;
-  color: var(--gold);
-}
+h1 em { font-style: italic; color: var(--gold); }
 
 .header-line {
   width: 48px;
@@ -146,16 +154,8 @@ h1 em {
   transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-.filter-btn:hover {
-  color: var(--text-primary);
-  border-color: var(--border-mid);
-}
-
-.filter-btn.active {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: var(--bg-base);
-}
+.filter-btn:hover { color: var(--text-primary); border-color: var(--border-mid); }
+.filter-btn.active { background: var(--gold); border-color: var(--gold); color: var(--bg-base); }
 
 .grid {
   display: grid;
@@ -171,12 +171,8 @@ h1 em {
   opacity: 0;
   transform: translateY(24px);
   animation: card-in 0.5s var(--ease-out-expo) var(--delay, 0ms) forwards;
-  transition: background 0.4s ease;
-}
-
-.card.show {
-  opacity: 1;
-  transform: translateY(0);
+  transition: background 0.4s ease, transform 0.2s ease;
+  will-change: transform;
 }
 
 @keyframes card-in {
@@ -200,19 +196,17 @@ h1 em {
   filter: brightness(0.85) saturate(0.9);
 }
 
-.light .project-img {
-  filter: brightness(0.95) saturate(0.95);
-}
+.light .project-img { filter: brightness(0.95) saturate(0.95); }
 
 .card-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, transparent 40%, rgba(11, 11, 14, 0.6) 100%);
+  background: linear-gradient(to bottom, transparent 40%, rgba(11,11,14,0.6) 100%);
   transition: opacity 0.4s ease;
 }
 
 .light .card-overlay {
-  background: linear-gradient(to bottom, transparent 40%, rgba(240, 235, 226, 0.5) 100%);
+  background: linear-gradient(to bottom, transparent 40%, rgba(240,235,226,0.5) 100%);
 }
 
 .card:hover .project-img  { transform: scale(1.06); }
@@ -228,9 +222,7 @@ h1 em {
 .card-body::before {
   content: "";
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 0; left: 0; right: 0;
   height: 2px;
   background: var(--gold);
   transform: scaleX(0);
@@ -287,8 +279,8 @@ h1 em {
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.card:hover .view-link  { color: var(--gold); }
-.card:hover .arrow      { transform: translateX(5px); }
+.card:hover .view-link { color: var(--gold); }
+.card:hover .arrow     { transform: translateX(5px); }
 
 .grid-fade-enter-active { transition: opacity 0.25s ease, transform 0.3s var(--ease-out-expo); }
 .grid-fade-leave-active { transition: opacity 0.2s ease; }

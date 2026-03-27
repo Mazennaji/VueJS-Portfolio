@@ -35,6 +35,7 @@ const skills = [
   { name: "TypeScript", level: "80%", colorDark: "#3178C6", colorLight: "#3178C6", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/typescript.svg" },
   { name: "Vue.js",     level: "90%", colorDark: "#4FC08D", colorLight: "#368a62", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/vuedotjs.svg" },
   { name: "React",      level: "85%", colorDark: "#61DAFB", colorLight: "#0a9bb5", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/react.svg" },
+  { name: "Vite",      level: "80%", colorDark: "#646CFF", colorLight: "#646CFF", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/vite.svg" },
   { name: "Svelte",     level: "70%", colorDark: "#FF3E00", colorLight: "#FF3E00", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/svelte.svg" },
   { name: "Tailwind",   level: "80%", colorDark: "#06B6D4", colorLight: "#0284a0", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/tailwindcss.svg" },
   { name: "Bootstrap",  level: "80%", colorDark: "#7952B3", colorLight: "#7952B3", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/bootstrap.svg" },
@@ -42,6 +43,8 @@ const skills = [
   { name: "GitHub",     level: "80%", colorDark: "#F1F1F1", colorLight: "#1a1a1a", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/github.svg" },
   { name: "Angular",    level: "70%", colorDark: "#DD0031", colorLight: "#DD0031", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/angular.svg" },
   { name: "Grunt",      level: "60%", colorDark: "#FAA918", colorLight: "#c47d00", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/grunt.svg" },
+  { name: "Next.js",      level: "80%", colorDark: "#f8f8f8", colorLight: "#1a1a1a", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/nextdotjs.svg" },
+  { name: "Nuxt.js",      level: "80%", colorDark: "#f8f8f8", colorLight: "#1a1a1a", logo: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/nuxtdotjs.svg" },
 ]
 </script>
 

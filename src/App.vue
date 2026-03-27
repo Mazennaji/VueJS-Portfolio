@@ -1,5 +1,6 @@
 <template>
   <div class="app-root">
+    <div class="progress-bar" :class="{ active: isNavigating }" />
     <Navbar :isDark="isDark" @toggle-dark="toggleDark" />
     <main class="app-main">
       <router-view v-slot="{ Component }">
@@ -8,14 +9,18 @@
         </Transition>
       </router-view>
     </main>
+    <Footer />
   </div>
 </template>
 
 <script setup>
 import { ref, watch, onMounted } from "vue"
+import { useRouter } from "vue-router"
 import Navbar from "./components/Navbar.vue"
+import Footer from "./components/Footer.vue"
 
-const isDark = ref(false)
+const isDark      = ref(false)
+const isNavigating = ref(false)
 
 onMounted(() => {
   isDark.value = window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -28,6 +33,13 @@ function toggleDark() {
 watch(isDark, (val) => {
   document.documentElement.classList.toggle("dark", val)
 }, { immediate: true })
+
+const router = useRouter()
+
+router.beforeEach(() => { isNavigating.value = true })
+router.afterEach(()  => {
+  setTimeout(() => { isNavigating.value = false }, 400)
+})
 </script>
 
 <style>
@@ -62,20 +74,6 @@ watch(isDark, (val) => {
   --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-:root.dark {
-  --bg-base:    #0b0b0e;
-  --bg-surface: #111115;
-  --bg-raised:  #16161b;
-
-  --border-subtle: #1e1e24;
-  --border-mid:    #2a2a32;
-
-  --text-primary:   #f0ebe2;
-  --text-secondary: #9a8c78;
-  --text-muted:     #6e6a64;
-  --text-faint:     #4a4640;
-}
-
 :root:not(.dark) {
   --bg-base:    #f5f2ed;
   --bg-surface: #edeae4;
@@ -97,9 +95,7 @@ html {
   scroll-behavior: smooth;
 }
 
-html, body {
-  min-height: 100%;
-}
+html, body { min-height: 100%; }
 
 body {
   font-family: var(--font-sans);
@@ -124,6 +120,23 @@ body {
 .app-main {
   flex: 1;
   padding-top: 68px;
+}
+
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: var(--gold);
+  z-index: 9999;
+  transition: width 0.4s var(--ease-out-expo), opacity 0.3s ease;
+  opacity: 0;
+}
+
+.progress-bar.active {
+  width: 70%;
+  opacity: 1;
 }
 
 ::selection {

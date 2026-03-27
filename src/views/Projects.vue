@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from "vue"
+import { ref, computed, onMounted, onUnmounted } from "vue"
 
 const isDark = ref(document.documentElement.classList.contains("dark"))
 
@@ -9,60 +9,73 @@ onMounted(() => {
     isDark.value = document.documentElement.classList.contains("dark")
   })
   mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] })
-
-  const cards = document.querySelectorAll(".card")
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("show")
-          observer.unobserve(entry.target)
-        }
-      })
-    },
-    { threshold: 0.15 }
-  )
-  cards.forEach((card) => observer.observe(card))
 })
-
 onUnmounted(() => mo?.disconnect())
 
 const projects = [
-  { title: "Landing Page", desc: "Responsive landing page", img: "/landingpage.png", tag: "Web Design" },
-  { title: "Dashboard UI", desc: "Admin dashboard",        img: "/dashboard.png",    tag: "UI/UX" },
-  { title: "Portfolio",    desc: "Vue portfolio site",     img: "/portfolio.png",    tag: "Development" },
+  { title: "Landing Page",   desc: "Responsive landing page",  img: "/landingpage.png", tag: "Web Design"  },
+  { title: "Dashboard UI",   desc: "Admin dashboard",          img: "/dashboard.png",   tag: "UI/UX"       },
+  { title: "Portfolio",      desc: "Vue portfolio site",       img: "/portfolio.png",   tag: "Development" },
+  { title: "E-commerce UI",  desc: "Product listing page",     img: "/ecommerce.png",   tag: "Web Design"  },
+  { title: "Analytics App",  desc: "Data visualization tool",  img: "/analytics.png",   tag: "UI/UX"       },
+  { title: "Component Lib",  desc: "Reusable Vue components",  img: "/components.png",  tag: "Development" },
 ]
+
+const tags    = ["All", ...new Set(projects.map(p => p.tag))]
+const active  = ref("All")
+
+const filtered = computed(() =>
+  active.value === "All" ? projects : projects.filter(p => p.tag === active.value)
+)
+
+function setFilter(tag) {
+  active.value = tag
+}
 </script>
 
 <template>
   <section class="projects" :class="{ light: !isDark }">
     <header class="projects-header">
       <span class="overline">Selected Work</span>
-      <h1>Projects</h1>
+      <h1>Pro<em>jects</em></h1>
       <div class="header-line" />
     </header>
 
-    <div class="grid">
-      <article
-        v-for="(p, i) in projects"
-        :key="p.title"
-        class="card"
-        :style="`--delay: ${i * 120}ms`"
+    <div class="filters">
+      <button
+        v-for="tag in tags"
+        :key="tag"
+        class="filter-btn"
+        :class="{ active: active === tag }"
+        @click="setFilter(tag)"
       >
-        <div class="card-media">
-          <img :src="p.img" :alt="p.title" class="project-img" />
-          <div class="card-overlay" />
-        </div>
-        <div class="card-body">
-          <span class="tag">{{ p.tag }}</span>
-          <h3>{{ p.title }}</h3>
-          <p>{{ p.desc }}</p>
-          <div class="card-footer">
-            <span class="view-link">View Project <span class="arrow">→</span></span>
-          </div>
-        </div>
-      </article>
+        {{ tag }}
+      </button>
     </div>
+
+    <Transition name="grid-fade" mode="out-in">
+      <div class="grid" :key="active">
+        <article
+          v-for="(p, i) in filtered"
+          :key="p.title"
+          class="card show"
+          :style="`--delay: ${i * 80}ms`"
+        >
+          <div class="card-media">
+            <img :src="p.img" :alt="p.title" class="project-img" />
+            <div class="card-overlay" />
+          </div>
+          <div class="card-body">
+            <span class="tag">{{ p.tag }}</span>
+            <h3>{{ p.title }}</h3>
+            <p>{{ p.desc }}</p>
+            <div class="card-footer">
+              <span class="view-link">View Project <span class="arrow">→</span></span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </Transition>
   </section>
 </template>
 
@@ -76,7 +89,7 @@ const projects = [
   transition: background 0.4s ease, color 0.4s ease;
 }
 
-.projects-header { margin-bottom: 64px; }
+.projects-header { margin-bottom: 48px; }
 
 .overline {
   display: block;
@@ -100,10 +113,48 @@ h1 {
   transition: color 0.4s ease;
 }
 
+h1 em {
+  font-style: italic;
+  color: var(--gold);
+}
+
 .header-line {
   width: 48px;
   height: 2px;
   background: var(--gold);
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 9px 20px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.filter-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--border-mid);
+}
+
+.filter-btn.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--bg-base);
 }
 
 .grid {
@@ -118,16 +169,18 @@ h1 {
   overflow: hidden;
   cursor: pointer;
   opacity: 0;
-  transform: translateY(32px);
-  transition:
-    opacity 0.7s ease var(--delay, 0ms),
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--delay, 0ms),
-    background 0.4s ease;
+  transform: translateY(24px);
+  animation: card-in 0.5s var(--ease-out-expo) var(--delay, 0ms) forwards;
+  transition: background 0.4s ease;
 }
 
 .card.show {
   opacity: 1;
   transform: translateY(0);
+}
+
+@keyframes card-in {
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .card-media {
@@ -154,20 +207,12 @@ h1 {
 .card-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 40%,
-    rgba(var(--bg-base-rgb, 11, 11, 14), 0.6) 100%
-  );
+  background: linear-gradient(to bottom, transparent 40%, rgba(11, 11, 14, 0.6) 100%);
   transition: opacity 0.4s ease;
 }
 
 .light .card-overlay {
-  background: linear-gradient(
-    to bottom,
-    transparent 40%,
-    rgba(240, 235, 226, 0.5) 100%
-  );
+  background: linear-gradient(to bottom, transparent 40%, rgba(240, 235, 226, 0.5) 100%);
 }
 
 .card:hover .project-img  { transform: scale(1.06); }
@@ -244,4 +289,13 @@ h1 {
 
 .card:hover .view-link  { color: var(--gold); }
 .card:hover .arrow      { transform: translateX(5px); }
+
+.grid-fade-enter-active { transition: opacity 0.25s ease, transform 0.3s var(--ease-out-expo); }
+.grid-fade-leave-active { transition: opacity 0.2s ease; }
+.grid-fade-enter-from   { opacity: 0; transform: translateY(8px); }
+.grid-fade-leave-to     { opacity: 0; }
+
+@media (max-width: 768px) {
+  .projects { padding: 60px 24px 80px; }
+}
 </style>

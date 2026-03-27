@@ -70,10 +70,12 @@ defineProps({ isDark: Boolean })
 defineEmits(["toggle-dark"])
 
 const links = [
-  { to: "/",         label: "Home"     },
-  { to: "/about",    label: "About"    },
-  { to: "/projects", label: "Projects" },
-  { to: "/contact",  label: "Contact"  },
+  { to: "/",           label: "Home"       },
+  { to: "/about",      label: "About"      },
+  { to: "/experience", label: "Experience" },
+  { to: "/projects",   label: "Projects"   },
+  { to: "/services",   label: "Services"   },
+  { to: "/contact",    label: "Contact"    },
 ]
 
 const openMenu = ref(false)

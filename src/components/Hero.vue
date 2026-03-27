@@ -68,8 +68,8 @@ onUnmounted(() => {
       <span class="label">Available for work</span>
 
       <h1>
-        <span class="line">Frontend</span>
-        <span class="line accent">{{ current }}<span class="cursor">|</span></span>
+        <span class="line-main">I'm a</span>
+        <span class="line-typed accent">{{ current }}<span class="cursor">|</span></span>
       </h1>
 
       <p>Building clean and modern web interfaces with Vue.</p>
@@ -111,6 +111,9 @@ onUnmounted(() => {
   font-family: var(--font-sans);
   color: var(--text-primary);
   transition: background 0.4s ease, color 0.4s ease;
+  padding-top: 80px;
+  padding-bottom: 80px;
+  box-sizing: border-box;
 }
 
 .noise {
@@ -174,22 +177,26 @@ h1 {
   display: flex;
   flex-direction: column;
   font-family: var(--font-serif);
-  font-size: clamp(48px, 10vw, 120px);
   font-weight: 700;
-  line-height: 0.9;
+  line-height: 0.95;
   letter-spacing: -0.03em;
   margin: 0 0 32px;
   color: var(--text-primary);
   transition: color 0.4s ease;
-  min-height: 2.2em;
 }
 
-.line {
+.line-main {
   display: block;
+  font-size: clamp(64px, 12vw, 140px);
   animation: fade-up 0.8s ease both;
 }
 
-.line:nth-child(2) { animation-delay: 0.1s; }
+.line-typed {
+  display: block;
+  font-size: clamp(32px, 5.5vw, 64px);
+  min-height: 1.2em;
+  animation: fade-up 0.8s ease 0.1s both;
+}
 
 .accent {
   font-style: italic;
@@ -202,6 +209,7 @@ h1 {
   opacity: 1;
   animation: blink 1s step-end infinite;
   margin-left: 2px;
+  font-style: normal;
 }
 
 @keyframes blink {
@@ -273,7 +281,7 @@ p {
   display: flex;
   align-items: center;
   gap: 0;
-  margin-top: 80px;
+  margin-top: 64px;
   border: 1px solid var(--border-subtle);
   animation: fade-up 0.8s ease 0.5s both;
 }
@@ -312,7 +320,7 @@ p {
 
 .scroll-hint {
   position: absolute;
-  bottom: 40px;
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;

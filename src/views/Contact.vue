@@ -20,43 +20,68 @@
       </div>
     </header>
 
-    <form class="form" @submit.prevent="submit" novalidate>
-      <div class="field" :class="{ active: focused === 'name' || name }">
-        <label for="name">Name</label>
-        <input id="name" v-model="name" autocomplete="name"
-          @focus="focused = 'name'" @blur="focused = ''" />
-      </div>
+    <div class="contact-body">
+      <form class="form" @submit.prevent="submit" novalidate>
+        <div class="field" :class="{ active: focused === 'name' || name }">
+          <label for="name">Name</label>
+          <input id="name" v-model="name" autocomplete="name"
+            @focus="focused = 'name'" @blur="focused = ''" />
+        </div>
 
-      <div class="field" :class="{ active: focused === 'email' || email }">
-        <label for="email">Email</label>
-        <input id="email" v-model="email" type="email" autocomplete="email"
-          @focus="focused = 'email'" @blur="focused = ''" />
-      </div>
+        <div class="field" :class="{ active: focused === 'email' || email }">
+          <label for="email">Email</label>
+          <input id="email" v-model="email" type="email" autocomplete="email"
+            @focus="focused = 'email'" @blur="focused = ''" />
+        </div>
 
-      <div class="field textarea-field" :class="{ active: focused === 'message' || message }">
-        <label for="message">Message</label>
-        <textarea id="message" v-model="message" rows="5"
-          @focus="focused = 'message'" @blur="focused = ''" />
-      </div>
+        <div class="field textarea-field" :class="{ active: focused === 'message' || message }">
+          <label for="message">Message</label>
+          <textarea id="message" v-model="message" rows="5"
+            @focus="focused = 'message'" @blur="focused = ''" />
+        </div>
 
-      <Transition name="status">
-        <p v-if="error" class="status error"><span class="status-dot" />{{ error }}</p>
-        <p v-else-if="success" class="status success"><span class="status-dot" />Message sent — I'll be in touch soon.</p>
-      </Transition>
+        <Transition name="status">
+          <p v-if="error" class="status error"><span class="status-dot" />{{ error }}</p>
+          <p v-else-if="success" class="status success"><span class="status-dot" />Message sent — I'll be in touch soon.</p>
+        </Transition>
 
-      <button type="submit" class="btn" :class="{ sending }">
-        <span class="btn-label">{{ sending ? "Sending…" : "Send Message" }}</span>
-        <span class="btn-arrow">→</span>
-      </button>
-    </form>
+        <button type="submit" class="btn" :class="{ sending }">
+          <span class="btn-label">{{ sending ? "Sending…" : "Send Message" }}</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </form>
+
+      <aside class="contact-aside">
+        <AvailabilityCalendar />
+
+        <div class="aside-links">
+          <span class="overline">Find me on</span>
+          <div class="social-row">
+            <a
+              v-for="s in socials"
+              :key="s.label"
+              :href="s.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-btn"
+            >
+              <span class="social-icon" :style="`--mask: url('${s.icon}')`" />
+              {{ s.label }}
+              </a>
+          </div>
+        </div>
+      </aside>
+    </div>
   </section>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue"
+import AvailabilityCalendar from "../components/AvailabilityCalendar.vue"
 
 const isDark = ref(document.documentElement.classList.contains("dark"))
 let mo
+
 onMounted(() => {
   mo = new MutationObserver(() => {
     isDark.value = document.documentElement.classList.contains("dark")
@@ -73,6 +98,12 @@ const error   = ref("")
 const sending = ref(false)
 const focused = ref("")
 const copied  = ref(false)
+
+const socials = [
+  { label: "GitHub",   url: "https://github.com/",   icon: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/github.svg"   },
+  { label: "LinkedIn", url: "https://linkedin.com/", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/linkedin.svg" },
+  { label: "Gmail",  url: "https://mail.google.com/",        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/gmail.svg"        },
+]
 
 function copyEmail() {
   navigator.clipboard.writeText("hello@johndoe.com")
@@ -112,7 +143,7 @@ function submit() {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 80px 24px 100px;
+  padding: 80px 48px 100px;
   font-family: var(--font-sans);
   color: var(--text-primary);
   transition: background 0.4s ease, color 0.4s ease;
@@ -127,6 +158,8 @@ function submit() {
 .contact-header {
   text-align: center;
   margin-bottom: 56px;
+  width: 100%;
+  max-width: 960px;
 }
 
 .overline {
@@ -195,17 +228,20 @@ h1 em { font-style: italic; color: var(--gold); }
   transition: color 0.3s ease;
 }
 
-.copy-btn svg {
-  width: 13px;
-  height: 13px;
-}
-
-.copy-btn:hover { color: var(--gold); }
+.copy-btn svg { width: 13px; height: 13px; }
+.copy-btn:hover  { color: var(--gold); }
 .copy-btn.copied { color: #7a9e6a; }
 
-.form {
+.contact-body {
   width: 100%;
-  max-width: 480px;
+  max-width: 960px;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 48px;
+  align-items: start;
+}
+
+.form {
   display: flex;
   flex-direction: column;
 }
@@ -273,13 +309,13 @@ textarea { padding-top: 28px; line-height: 1.7; }
 }
 
 .status-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
-.error             { color: #b05535; }
-.error .status-dot { background: #b05535; }
-.success             { color: #7a9e6a; }
+.error              { color: #b05535; }
+.error .status-dot  { background: #b05535; }
+.success            { color: #7a9e6a; }
 .success .status-dot { background: #7a9e6a; }
 
 .status-enter-active, .status-leave-active { transition: opacity 0.3s ease, transform 0.3s ease; }
-.status-enter-from, .status-leave-to       { opacity: 0; transform: translateY(6px); }
+.status-enter-from,   .status-leave-to     { opacity: 0; transform: translateY(6px); }
 
 .btn {
   margin-top: 32px;
@@ -312,8 +348,8 @@ textarea { padding-top: 28px; line-height: 1.7; }
   z-index: 0;
 }
 
-.btn:hover::before { transform: scaleX(1); }
-.btn:hover { color: var(--bg-base); border-color: var(--gold); }
+.btn:hover::before  { transform: scaleX(1); }
+.btn:hover          { color: var(--bg-base); border-color: var(--gold); }
 
 .btn-label, .btn-arrow {
   position: relative;
@@ -322,5 +358,72 @@ textarea { padding-top: 28px; line-height: 1.7; }
 }
 
 .btn:hover .btn-arrow { transform: translateX(4px); }
-.btn.sending { pointer-events: none; opacity: 0.6; }
+.btn.sending          { pointer-events: none; opacity: 0.6; }
+
+.contact-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: sticky;
+  top: 100px;
+}
+
+.aside-links {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+
+.social-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+.social-btn:hover {
+  color: var(--text-primary);
+  border-left-color: var(--gold);
+  background: var(--bg-raised);
+}
+
+.social-icon {
+  display: block;
+  width: 14px;
+  height: 14px;
+  background-color: currentColor;
+  -webkit-mask-image: var(--mask);
+  mask-image: var(--mask);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  flex-shrink: 0;
+}
+
+@media (max-width: 860px) {
+  .contact { padding: 60px 24px 80px; }
+  .contact-body { grid-template-columns: 1fr; }
+  .contact-aside { position: static; }
+}
 </style>
